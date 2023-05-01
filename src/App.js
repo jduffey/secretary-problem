@@ -12,6 +12,7 @@ const App = () => {
     const numSimulations = 1000;
 
     const [chartData, setChartData] = useState({});
+    const [simulationCount, setSimulationCount] = useState(0);
 
     const calculateSuccessRatio = (stopFraction, currentSimulations, currentSuccessCount) => {
         const candidates = Array.from({ length: numCandidates }, () => Math.random());
@@ -30,7 +31,6 @@ const App = () => {
         return currentSuccessCount / (currentSimulations + 1);
     };
 
-    const [simulationCount, setSimulationCount] = useState(0);
 
     const prepareChartData = () => {
         const dataPoints = Array.from({ length: 101 }, (_, i) => i / 100);
@@ -58,10 +58,11 @@ const App = () => {
     };
 
     useEffect(() => {
+        const msDelayBetweenSimulations = 50;
         if (simulationCount < numSimulations) {
             const timer = setTimeout(() => {
                 prepareChartData();
-            }, 100); // Adjust the delay (100 ms) to your preference
+            }, msDelayBetweenSimulations);
             return () => clearTimeout(timer);
         }
     }, [simulationCount]);
@@ -70,6 +71,24 @@ const App = () => {
     return (
         <Container>
             <h1>Secretary Problem Simulator</h1>
+            <p>
+                https://mathworld.wolfram.com/SultansDowryProblem.html
+            </p>
+            <p>
+                https://en.wikipedia.org/wiki/Secretary_problem
+            </p>
+            <p>
+                The basic problem can be stated as follows:
+                <ul>
+                    <li>There is a single position to fill.</li>
+                    <li>There are n applicants for the position, and the value of n is known.</li>
+                    <li>The applicants, if all seen together, can be ranked from best to worst unambiguously.</li>
+                    <li>The applicants are interviewed sequentially in random order, with each order being equally likely.</li>
+                    <li>Immediately after an interview, the interviewed applicant is either accepted or rejected, and the decision is irrevocable.</li>
+                    <li>The decision to accept or reject an applicant can be based only on the relative ranks of the applicants interviewed so far.</li>
+                    <li><b>The objective of the general solution is to have the highest probability of selecting the best applicant of the whole group.</b> This is the same as maximizing the expected payoff, with payoff defined to be one for the best applicant and zero otherwise.</li>
+                </ul>
+            </p>
             {chartData.labels && chartData.datasets && (
                 <Bar
                     data={chartData}
@@ -94,7 +113,7 @@ const App = () => {
                     }}
                 />
             )}
-            <p>Simulations performed: {simulationCount}</p>
+            <p>Simulations performed: {simulationCount} / {numSimulations} ({simulationCount / numSimulations * 100}%)</p>
         </Container>
     );
 };
