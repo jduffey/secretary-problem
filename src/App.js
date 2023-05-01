@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container } from "react-bootstrap";
-import { Line } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import { Chart } from "chart.js";
 import { CategoryScale } from "chart.js/auto";
 
@@ -60,7 +60,7 @@ const App = () => {
         <Container>
             <h1>Secretary Problem Simulator</h1>
             {chartData.labels && chartData.datasets && (
-                <Line
+                <Bar
                     data={chartData}
                     options={{
                         scales: {
