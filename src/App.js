@@ -13,48 +13,59 @@ const App = () => {
 
     const [chartData, setChartData] = useState({});
 
-    const calculateSuccessRatio = (stopFraction) => {
-        let successCount = 0;
+    const calculateSuccessRatio = (stopFraction, currentSimulations, currentSuccessCount) => {
+        const candidates = Array.from({ length: numCandidates }, () => Math.random());
+        const stopIndex = Math.floor(numCandidates * stopFraction);
 
-        for (let i = 0; i < numSimulations; i++) {
-            const candidates = Array.from({ length: numCandidates }, () => Math.random());
-            const stopIndex = Math.floor(numCandidates * stopFraction);
+        const maxInFirstPhase = Math.max(...candidates.slice(0, stopIndex));
+        const remainingCandidates = candidates.slice(stopIndex);
 
-            const maxInFirstPhase = Math.max(...candidates.slice(0, stopIndex));
-            const remainingCandidates = candidates.slice(stopIndex);
+        const chosenCandidate = remainingCandidates.find((candidate) => candidate > maxInFirstPhase);
+        const bestCandidate = Math.max(...candidates);
 
-            const chosenCandidate = remainingCandidates.find((candidate) => candidate > maxInFirstPhase);
-            const bestCandidate = Math.max(...candidates);
-
-            if (chosenCandidate === bestCandidate) {
-                successCount++;
-            }
+        if (chosenCandidate === bestCandidate) {
+            currentSuccessCount++;
         }
 
-        return successCount / numSimulations;
+        return currentSuccessCount / (currentSimulations + 1);
     };
+
+    const [simulationCount, setSimulationCount] = useState(0);
 
     const prepareChartData = () => {
         const dataPoints = Array.from({ length: 101 }, (_, i) => i / 100);
-        const successRatios = dataPoints.map((stopFraction) => calculateSuccessRatio(stopFraction));
 
-        setChartData({
+        const newChartData = {
             labels: dataPoints,
             datasets: [
                 {
                     label: "Success Ratio",
-                    data: successRatios,
+                    data: chartData.datasets ? chartData.datasets[0].data.slice() : new Array(101).fill(0),
                     backgroundColor: "rgba(75, 192, 192, 0.6)",
                     borderColor: "rgba(75, 192, 192, 1)",
                     borderWidth: 2,
                 },
             ],
+        };
+
+        dataPoints.forEach((stopFraction, index) => {
+            const currentSuccessCount = chartData.datasets ? chartData.datasets[0].data[index] * simulationCount : 0;
+            newChartData.datasets[0].data[index] = calculateSuccessRatio(stopFraction, simulationCount, currentSuccessCount);
         });
+
+        setChartData(newChartData);
+        setSimulationCount(simulationCount + 1);
     };
 
     useEffect(() => {
-        prepareChartData();
-    }, []);
+        if (simulationCount < numSimulations) {
+            const timer = setTimeout(() => {
+                prepareChartData();
+            }, 100); // Adjust the delay (100 ms) to your preference
+            return () => clearTimeout(timer);
+        }
+    }, [simulationCount]);
+
 
     return (
         <Container>
