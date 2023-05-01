@@ -94,6 +94,7 @@ const App = () => {
                     }}
                 />
             )}
+            <p>Simulations performed: {simulationCount}</p>
         </Container>
     );
 };
