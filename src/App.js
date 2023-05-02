@@ -52,25 +52,15 @@ const App = () => {
         });
 
         const sortedSuccessRatios = [...newChartData.datasets[0].data].sort((a, b) => b - a);
-        const top10PercentIndex = Math.floor(sortedSuccessRatios.length * 0.1);
-        const top20PercentIndex = Math.floor(sortedSuccessRatios.length * 0.2);
-        const top30PercentIndex = Math.floor(sortedSuccessRatios.length * 0.3);
-        const top40PercentIndex = Math.floor(sortedSuccessRatios.length * 0.4);
-        const top50PercentIndex = Math.floor(sortedSuccessRatios.length * 0.5);
-        const top10PercentThreshold = sortedSuccessRatios[top10PercentIndex];
-        const top20PercentThreshold = sortedSuccessRatios[top20PercentIndex];
-        const top30PercentThreshold = sortedSuccessRatios[top30PercentIndex];
-        const top40PercentThreshold = sortedSuccessRatios[top40PercentIndex];
-        const top50PercentThreshold = sortedSuccessRatios[top50PercentIndex];
 
         newChartData.datasets[0].backgroundColor = newChartData.datasets[0].data.map((successRatio) => {
             return [
-                [sortedSuccessRatios[0], "black"],
-                [top10PercentThreshold, "red"],
-                [top20PercentThreshold, "orange"],
-                [top30PercentThreshold, "yellow"],
-                [top40PercentThreshold, "green"],
-                [top50PercentThreshold, "blue"],
+                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0)], "black"],
+                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.1)], "red"],
+                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.2)], "orange"],
+                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.3)], "yellow"],
+                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.4)], "green"],
+                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.5)], "blue"],
                 [sortedSuccessRatios[sortedSuccessRatios.length - 1], "#CCCCCC"],
             ].find((thresholdColorPair) => successRatio >= thresholdColorPair[0])[1];
         });
