@@ -63,22 +63,16 @@ const App = () => {
         const top40PercentThreshold = sortedSuccessRatios[top40PercentIndex];
         const top50PercentThreshold = sortedSuccessRatios[top50PercentIndex];
 
-        newChartData.datasets[0].backgroundColor = newChartData.datasets[0].data.map((value) => {
-            if (value === sortedSuccessRatios[0]) {
-                return "black";
-            } else if (value >= top10PercentThreshold) {
-                return "red";
-            } else if (value >= top20PercentThreshold) {
-                return "orange";
-            } else if (value >= top30PercentThreshold) {
-                return "yellow";
-            } else if (value >= top40PercentThreshold) {
-                return "green";
-            } else if (value >= top50PercentThreshold) {
-                return "blue";
-            } else {
-                return "#CCCCCC";
-            }
+        newChartData.datasets[0].backgroundColor = newChartData.datasets[0].data.map((successRatio) => {
+            return [
+                [sortedSuccessRatios[0], "black"],
+                [top10PercentThreshold, "red"],
+                [top20PercentThreshold, "orange"],
+                [top30PercentThreshold, "yellow"],
+                [top40PercentThreshold, "green"],
+                [top50PercentThreshold, "blue"],
+                [sortedSuccessRatios[sortedSuccessRatios.length - 1], "#CCCCCC"],
+            ].find((thresholdColorPair) => successRatio >= thresholdColorPair[0])[1];
         });
 
         setChartData(newChartData);
