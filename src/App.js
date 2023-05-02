@@ -64,7 +64,9 @@ const App = () => {
         const top50PercentThreshold = sortedSuccessRatios[top50PercentIndex];
 
         newChartData.datasets[0].backgroundColor = newChartData.datasets[0].data.map((value) => {
-            if (value >= top10PercentThreshold) {
+            if (value === sortedSuccessRatios[0]) {
+                return "black";
+            } else if (value >= top10PercentThreshold) {
                 return "red";
             } else if (value >= top20PercentThreshold) {
                 return "orange";
