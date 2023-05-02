@@ -9,7 +9,7 @@ Chart.register(CategoryScale);
 
 const App = () => {
     const numCandidates = 100;
-    const numSimulations = 1000;
+    const numSimulations = 100_000;
 
     const [chartData, setChartData] = useState({});
     const [simulationCount, setSimulationCount] = useState(0);
@@ -31,7 +31,6 @@ const App = () => {
         return currentSuccessCount / (currentSimulations + 1);
     };
 
-
     const prepareChartData = () => {
         const dataPoints = Array.from({ length: 101 }, (_, i) => i / 100);
 
@@ -41,8 +40,8 @@ const App = () => {
                 {
                     label: "Success Ratio",
                     data: chartData.datasets ? chartData.datasets[0].data.slice() : new Array(101).fill(0),
-                    backgroundColor: "rgba(75, 192, 192, 0.6)",
-                    borderColor: "rgba(75, 192, 192, 1)",
+                    backgroundColor: [],
+                    borderColor: "#777777",
                     borderWidth: 2,
                 },
             ],
@@ -53,12 +52,40 @@ const App = () => {
             newChartData.datasets[0].data[index] = calculateSuccessRatio(stopFraction, simulationCount, currentSuccessCount);
         });
 
+        const sortedSuccessRatios = [...newChartData.datasets[0].data].sort((a, b) => b - a);
+        const top10PercentIndex = Math.floor(sortedSuccessRatios.length * 0.1);
+        const top20PercentIndex = Math.floor(sortedSuccessRatios.length * 0.2);
+        const top30PercentIndex = Math.floor(sortedSuccessRatios.length * 0.3);
+        const top40PercentIndex = Math.floor(sortedSuccessRatios.length * 0.4);
+        const top50PercentIndex = Math.floor(sortedSuccessRatios.length * 0.5);
+        const top10PercentThreshold = sortedSuccessRatios[top10PercentIndex];
+        const top20PercentThreshold = sortedSuccessRatios[top20PercentIndex];
+        const top30PercentThreshold = sortedSuccessRatios[top30PercentIndex];
+        const top40PercentThreshold = sortedSuccessRatios[top40PercentIndex];
+        const top50PercentThreshold = sortedSuccessRatios[top50PercentIndex];
+
+        newChartData.datasets[0].backgroundColor = newChartData.datasets[0].data.map((value) => {
+            if (value >= top10PercentThreshold) {
+                return "red";
+            } else if (value >= top20PercentThreshold) {
+                return "orange";
+            } else if (value >= top30PercentThreshold) {
+                return "yellow";
+            } else if (value >= top40PercentThreshold) {
+                return "green";
+            } else if (value >= top50PercentThreshold) {
+                return "blue";
+            } else {
+                return "#EEEEEE";
+            }
+        });
+
         setChartData(newChartData);
         setSimulationCount(simulationCount + 1);
     };
 
     useEffect(() => {
-        const msDelayBetweenSimulations = 50;
+        const msDelayBetweenSimulations = 10;
         if (simulationCount < numSimulations) {
             const timer = setTimeout(() => {
                 prepareChartData();
@@ -66,7 +93,6 @@ const App = () => {
             return () => clearTimeout(timer);
         }
     }, [simulationCount]);
-
 
     return (
         <Container>
