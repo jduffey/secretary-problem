@@ -98,23 +98,9 @@ const App = () => {
             <h1>Secretary Problem Simulator</h1>
             <p>
                 The Secretary Problem is an oft-studied problem in the field of statistics, probabilities, and decision-making. A common description of the problem goes something like this:
-            </p>
-            <p>
-                Imagine an administrator who wants to hire the best secretary out of <i>n</i> rankable candidates for a position. The candidates are interviewed one by one in random order. A decision about each particular candidate must be made immediately after the interview. Once rejected, an candidate cannot be recalled. During the interview, the administrator gains information sufficient to rank the candidate among all candidates interviewed so far, but is unaware of the quality of yet unseen candidates. The problem faced by the administrator is <b>deciding the optimal strategy to maximize the probability of selecting the best candidate.</b> If the decision can be deferred to the end, then the problem is trivial -- simply choose the highest-ranked candidate. The difficulty is that the decision to hire a candidate must be made immediately after assessing that candidate.
-            </p>
-            <p>
-                In summary:
-                <ul>
-                    <li>There is a single position to fill.</li>
-                    <li>There are <i>n</i> candidates for the position, and the value of <i>n</i> is known.</li>
-                    <li>The candidates, if all seen together, can be ranked from best to worst unambiguously.</li>
-                    <ul><li>Note that we are not concerned with the <i>absolute</i> quality of a candidate, only the relative quality (i.e. ranking).</li></ul>
-                    <li>The candidates are interviewed sequentially and in random order.</li>
-                    <li>A candidate is either accepted or rejected immediately after the inteview, and the decision is irrevocable.</li>
-                    <li><b>The decision to accept or reject a candidate can be based only on the relative ranks of the candidates interviewed so far.</b></li>
-                    <li>The administrator's objective is to have <b>the highest probability of selecting the best candidate of the whole group.</b></li>
-                    <ul><li>This is the same as maximizing the expected payoff, with payoff defined to be <b>1</b> for the best candidate and <b>0</b> otherwise.</li></ul>
-                </ul>
+                <p style={{ margin: "10px 80px 0px 30px" }}>
+                    Imagine an administrator who wants to hire the best secretary out of <i>n</i> rankable candidates for a position. The candidates are interviewed one by one in random order. A decision about each particular candidate must be made immediately after the interview. Once rejected, an candidate cannot be recalled. During the interview, the administrator gains information sufficient to rank the candidate among all candidates interviewed so far, but is unaware of the quality of yet unseen candidates. The problem faced by the administrator is <b>deciding the optimal strategy to maximize the probability of selecting the best candidate.</b> If the decision can be deferred to the end, then the problem is trivial -- simply choose the highest-ranked candidate. The difficulty is that the decision to hire a candidate must be made immediately after assessing that candidate.
+                </p>
             </p>
             {chartData.labels && chartData.datasets && (
                 <Bar
@@ -143,8 +129,26 @@ const App = () => {
                     }}
                 />
             )}
-            <pre>Simulations performed: {simulationCount.toLocaleString()} / {numSimulations.toLocaleString()} ({(simulationCount / numSimulations * 100).toFixed(2)}%)</pre>
-        </Container>
+            <pre>
+                Simulations performed: {simulationCount.toLocaleString()} / {numSimulations.toLocaleString()} ({(simulationCount / numSimulations * 100).toFixed(2)}%)
+                <br />
+                Number of candidates in each simulation (<i>n</i>): {numCandidates.toLocaleString()}
+            </pre>
+            <p>
+                In summary:
+                <ul>
+                    <li>There is a single position to fill.</li>
+                    <li>There are <i>n</i> candidates for the position, and the value of <i>n</i> is known.</li>
+                    <li>The candidates, if all seen together, can be ranked from best to worst unambiguously.</li>
+                    <ul><li>Note that we are not concerned with the <i>absolute</i> quality of a candidate, only the relative quality (i.e. ranking).</li></ul>
+                    <li>The candidates are interviewed sequentially and in random order.</li>
+                    <li>A candidate is either accepted or rejected immediately after the inteview, and the decision is irrevocable.</li>
+                    <li><b>The decision to accept or reject a candidate can be based only on the relative ranks of the candidates interviewed so far.</b></li>
+                    <li>The administrator's objective is to have <b>the highest probability of selecting the best candidate of the whole group.</b></li>
+                    <ul><li>This is the same as maximizing the expected payoff, with payoff defined to be <b>1</b> for the best candidate and <b>0</b> otherwise.</li></ul>
+                </ul>
+            </p>
+        </Container >
     );
 };
 
