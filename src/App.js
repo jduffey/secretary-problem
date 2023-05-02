@@ -41,8 +41,6 @@ const App = () => {
                     label: "Success Ratio",
                     data: chartData.datasets ? chartData.datasets[0].data.slice() : new Array(101).fill(0),
                     backgroundColor: [],
-                    borderColor: "#777777",
-                    borderWidth: 2,
                 },
             ],
         };
@@ -76,7 +74,7 @@ const App = () => {
             } else if (value >= top50PercentThreshold) {
                 return "blue";
             } else {
-                return "#EEEEEE";
+                return "#CCCCCC";
             }
         });
 
@@ -98,21 +96,21 @@ const App = () => {
         <Container>
             <h1>Secretary Problem Simulator</h1>
             <p>
-                https://mathworld.wolfram.com/SultansDowryProblem.html
+                The Secretary Problem is an oft-studied problem in the field of statistics, probabilities, and decision-making. A common description of the problem goes something like this:
             </p>
             <p>
-                https://en.wikipedia.org/wiki/Secretary_problem
+                Imagine an administrator who wants to hire the best secretary out of <i>n</i> rankable candidates for a position. The candidates are interviewed one by one in random order. A decision about each particular candidate must be made immediately after the interview. Once rejected, an candidate cannot be recalled. During the interview, the administrator gains information sufficient to rank the candidate among all candidates interviewed so far, but is unaware of the quality of yet unseen candidates. The problem faced by the administrator is deciding the optimal strategy ("stopping rule") to <b>maximize the probability of selecting the best candidate.</b> If the decision can be deferred to the end, then the problem is trivial -- simply choose the candidate who achieved the highest rank. The difficulty is that the decision to hire a candidate must be made immediately after assessing that candidate.
             </p>
             <p>
-                The basic problem can be stated as follows:
+                In summary:
                 <ul>
                     <li>There is a single position to fill.</li>
-                    <li>There are n applicants for the position, and the value of n is known.</li>
-                    <li>The applicants, if all seen together, can be ranked from best to worst unambiguously.</li>
-                    <li>The applicants are interviewed sequentially in random order, with each order being equally likely.</li>
-                    <li>Immediately after an interview, the interviewed applicant is either accepted or rejected, and the decision is irrevocable.</li>
-                    <li>The decision to accept or reject an applicant can be based only on the relative ranks of the applicants interviewed so far.</li>
-                    <li><b>The objective of the general solution is to have the highest probability of selecting the best applicant of the whole group.</b> This is the same as maximizing the expected payoff, with payoff defined to be one for the best applicant and zero otherwise.</li>
+                    <li>There are <i>n</i> candidates for the position, and the value of <i>n</i> is known.</li>
+                    <li>The candidates, if all seen together, can be ranked from best to worst unambiguously.</li>
+                    <li>The candidates are interviewed sequentially in random order, with each order being equally likely.</li>
+                    <li>The interviewed candidate is either accepted or rejected immediately after the inteview, and the decision is irrevocable.</li>
+                    <li><b>The decision to accept or reject an candidate can be based only on the relative ranks of the candidates interviewed so far.</b></li>
+                    <li>The administrator's objective is to have <b>the highest probability of selecting the best candidate of the whole group.</b> This is the same as maximizing the expected payoff, with payoff defined to be <b>1</b> for the best candidate and <b>0</b> otherwise.</li>
                 </ul>
             </p>
             {chartData.labels && chartData.datasets && (
