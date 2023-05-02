@@ -8,7 +8,7 @@ import { CategoryScale } from "chart.js/auto";
 Chart.register(CategoryScale);
 
 const App = () => {
-    const numCandidates = 100;
+    const numCandidates = 1000;
     const numSimulations = 100_000;
 
     const [chartData, setChartData] = useState({});
@@ -31,11 +31,11 @@ const App = () => {
         return currentSuccessCount / (currentSimulations + 1);
     };
 
-    const prepareChartData = () => {
+    const runSimulation = () => {
         const dataPoints = Array.from({ length: 101 }, (_, i) => i / 100);
 
         const newChartData = {
-            labels: dataPoints,
+            labels: dataPoints.map(e => e.toFixed(2)),
             datasets: [
                 {
                     label: "Success Ratio",
@@ -86,7 +86,7 @@ const App = () => {
         const msDelayBetweenSimulations = 10;
         if (simulationCount < numSimulations) {
             const timer = setTimeout(() => {
-                prepareChartData();
+                runSimulation();
             }, msDelayBetweenSimulations);
             return () => clearTimeout(timer);
         }
@@ -99,7 +99,7 @@ const App = () => {
                 The Secretary Problem is an oft-studied problem in the field of statistics, probabilities, and decision-making. A common description of the problem goes something like this:
             </p>
             <p>
-                Imagine an administrator who wants to hire the best secretary out of <i>n</i> rankable candidates for a position. The candidates are interviewed one by one in random order. A decision about each particular candidate must be made immediately after the interview. Once rejected, an candidate cannot be recalled. During the interview, the administrator gains information sufficient to rank the candidate among all candidates interviewed so far, but is unaware of the quality of yet unseen candidates. The problem faced by the administrator is deciding the optimal strategy ("stopping rule") to <b>maximize the probability of selecting the best candidate.</b> If the decision can be deferred to the end, then the problem is trivial -- simply choose the candidate who achieved the highest rank. The difficulty is that the decision to hire a candidate must be made immediately after assessing that candidate.
+                Imagine an administrator who wants to hire the best secretary out of <i>n</i> rankable candidates for a position. The candidates are interviewed one by one in random order. A decision about each particular candidate must be made immediately after the interview. Once rejected, an candidate cannot be recalled. During the interview, the administrator gains information sufficient to rank the candidate among all candidates interviewed so far, but is unaware of the quality of yet unseen candidates. The problem faced by the administrator is <b>deciding the optimal strategy to maximize the probability of selecting the best candidate.</b> If the decision can be deferred to the end, then the problem is trivial -- simply choose the highest-ranked candidate. The difficulty is that the decision to hire a candidate must be made immediately after assessing that candidate.
             </p>
             <p>
                 In summary:
@@ -122,22 +122,25 @@ const App = () => {
                                 type: "category",
                                 title: {
                                     display: true,
-                                    text: "Stopping Point",
+                                    text: "Stopping Point: The ratio of candidates interviewed before allowing a selection to be made.",
                                 },
                             },
                             y: {
                                 title: {
                                     display: true,
-                                    text: "Success Ratio",
+                                    text: "Success Ratio: The ratio of simulations where the best candidate was selected.",
                                 },
                                 min: 0,
-                                max: 1,
+                                max: 0.6,
+                                ticks: {
+                                    stepSize: 0.05,
+                                },
                             },
                         },
                     }}
                 />
             )}
-            <p>Simulations performed: {simulationCount} / {numSimulations} ({simulationCount / numSimulations * 100}%)</p>
+            <pre>Simulations performed: {simulationCount.toLocaleString()} / {numSimulations.toLocaleString()} ({(simulationCount / numSimulations * 100).toFixed(2)}%)</pre>
         </Container>
     );
 };
