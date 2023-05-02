@@ -55,13 +55,13 @@ const App = () => {
 
         newChartData.datasets[0].backgroundColor = newChartData.datasets[0].data.map((successRatio) => {
             return [
-                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0)], "black"],
+                [sortedSuccessRatios[0], "black"],
                 [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.1)], "red"],
                 [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.2)], "orange"],
                 [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.3)], "yellow"],
                 [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.4)], "green"],
                 [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.5)], "blue"],
-                [sortedSuccessRatios[sortedSuccessRatios.length - 1], "#CCCCCC"],
+                [0, "#CCCCCC"],
             ].find((thresholdColorPair) => successRatio >= thresholdColorPair[0])[1];
         });
 
