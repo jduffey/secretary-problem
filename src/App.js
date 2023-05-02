@@ -14,8 +14,7 @@ const App = () => {
     const [chartData, setChartData] = useState({});
     const [simulationCount, setSimulationCount] = useState(0);
 
-    const calculateSuccessRatio = (stopFraction, currentSimulations, currentSuccessCount) => {
-        const candidates = Array.from({ length: numCandidates }, () => Math.random());
+    const calculateSuccessRatio = (candidates, stopFraction, currentSimulations, currentSuccessCount) => {
         const stopIndex = Math.floor(numCandidates * stopFraction);
 
         const maxInFirstPhase = Math.max(...candidates.slice(0, stopIndex));
@@ -32,10 +31,10 @@ const App = () => {
     };
 
     const runSimulation = () => {
-        const dataPoints = Array.from({ length: 101 }, (_, i) => i / 100);
+        const stoppingPoints = Array.from({ length: 101 }, (_, i) => i / 100);
 
         const newChartData = {
-            labels: dataPoints.map(e => e.toFixed(2)),
+            labels: stoppingPoints.map(e => e.toFixed(2)),
             datasets: [
                 {
                     label: "Success Ratio",
@@ -45,9 +44,11 @@ const App = () => {
             ],
         };
 
-        dataPoints.forEach((stopFraction, index) => {
+        const candidates = Array.from({ length: numCandidates }, () => Math.random());
+
+        stoppingPoints.forEach((stopRatio, index) => {
             const currentSuccessCount = chartData.datasets ? chartData.datasets[0].data[index] * simulationCount : 0;
-            newChartData.datasets[0].data[index] = calculateSuccessRatio(stopFraction, simulationCount, currentSuccessCount);
+            newChartData.datasets[0].data[index] = calculateSuccessRatio(candidates, stopRatio, simulationCount, currentSuccessCount);
         });
 
         const sortedSuccessRatios = [...newChartData.datasets[0].data].sort((a, b) => b - a);
@@ -107,10 +108,12 @@ const App = () => {
                     <li>There is a single position to fill.</li>
                     <li>There are <i>n</i> candidates for the position, and the value of <i>n</i> is known.</li>
                     <li>The candidates, if all seen together, can be ranked from best to worst unambiguously.</li>
-                    <li>The candidates are interviewed sequentially in random order, with each order being equally likely.</li>
-                    <li>The interviewed candidate is either accepted or rejected immediately after the inteview, and the decision is irrevocable.</li>
-                    <li><b>The decision to accept or reject an candidate can be based only on the relative ranks of the candidates interviewed so far.</b></li>
-                    <li>The administrator's objective is to have <b>the highest probability of selecting the best candidate of the whole group.</b> This is the same as maximizing the expected payoff, with payoff defined to be <b>1</b> for the best candidate and <b>0</b> otherwise.</li>
+                    <ul><li>Note that we are not concerned with the <i>absolute</i> quality of a candidate, only the relative quality (i.e. ranking).</li></ul>
+                    <li>The candidates are interviewed sequentially and in random order.</li>
+                    <li>A candidate is either accepted or rejected immediately after the inteview, and the decision is irrevocable.</li>
+                    <li><b>The decision to accept or reject a candidate can be based only on the relative ranks of the candidates interviewed so far.</b></li>
+                    <li>The administrator's objective is to have <b>the highest probability of selecting the best candidate of the whole group.</b></li>
+                    <ul><li>This is the same as maximizing the expected payoff, with payoff defined to be <b>1</b> for the best candidate and <b>0</b> otherwise.</li></ul>
                 </ul>
             </p>
             {chartData.labels && chartData.datasets && (
