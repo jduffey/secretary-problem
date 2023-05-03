@@ -89,8 +89,8 @@ const App = () => {
         }
     }, [simulationCount]);
 
-    return (
-        <Container>
+    const Introduction = () => (
+        <div>
             <h1>Secretary Problem Simulator</h1>
             <div>
                 The Secretary Problem is an oft-studied problem in the field of statistics, probabilities, and decision-making. A common description of the problem goes something like this:
@@ -98,40 +98,11 @@ const App = () => {
                     Imagine an administrator who wants to hire the best secretary out of <i>n</i> rankable candidates for a position. The candidates are interviewed one by one in random order. A decision about each particular candidate must be made immediately after the interview. Once rejected, an candidate cannot be recalled. During the interview, the administrator gains information sufficient to rank the candidate among all candidates interviewed so far, but is unaware of the quality of yet unseen candidates. The problem faced by the administrator is <b>deciding the optimal strategy to maximize the probability of selecting the best candidate.</b> If the decision can be deferred to the end, then the problem is trivial -- simply choose the highest-ranked candidate. The difficulty is that the decision to hire a candidate must be made immediately after assessing that candidate.
                 </div>
             </div>
-            {chartData.labels && chartData.datasets && (
-                <Bar
-                    data={chartData}
-                    options={{
-                        scales: {
-                            x: {
-                                type: "category",
-                                title: {
-                                    display: true,
-                                    text: "Stopping Point: The ratio of candidates interviewed before allowing a selection to be made.",
-                                },
-                            },
-                            y: {
-                                title: {
-                                    display: true,
-                                    text: "Success Ratio: The ratio of simulations where the best candidate was selected.",
-                                },
-                                min: 0,
-                                max: 0.5,
-                                ticks: {
-                                    stepSize: 0.05,
-                                },
-                            },
-                        },
-                    }}
-                />
-            )}
-            <pre>
-                Simulations performed: {simulationCount.toLocaleString()} / {numSimulations.toLocaleString()} ({(simulationCount / numSimulations * 100).toFixed(2)}%)
-                <br />
-                Candidates per simulation (<i>n</i>): {numCandidates.toLocaleString()}
-                <br />
-                Number of stopping points: {numStoppingPoints.toLocaleString()}
-            </pre>
+        </div>
+    );
+
+    const Summary = () => (
+        <div>
             <div>
                 <h4>In summary:</h4>
                 <ul>
@@ -165,6 +136,53 @@ const App = () => {
                     <li>The colorings on the bars are intended to help with visualization and have no meaning or relevance to the problem.</li>
                 </ul>
             </div>
+        </div>
+    );
+
+    const SimulationStats = () => (
+        <div>
+            <pre>
+                Simulations performed: {simulationCount.toLocaleString()} / {numSimulations.toLocaleString()} ({(simulationCount / numSimulations * 100).toFixed(2)}%)
+                <br />
+                Candidates per simulation (<i>n</i>): {numCandidates.toLocaleString()}
+                <br />
+                Number of stopping points: {numStoppingPoints.toLocaleString()}
+            </pre>
+        </div>
+    );
+
+    return (
+        <Container>
+            <Introduction />
+            {chartData.labels && chartData.datasets && (
+                <Bar
+                    data={chartData}
+                    options={{
+                        scales: {
+                            x: {
+                                type: "category",
+                                title: {
+                                    display: true,
+                                    text: "Stopping Point: The ratio of candidates interviewed before allowing a selection to be made.",
+                                },
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: "Success Ratio: The ratio of simulations where the best candidate was selected.",
+                                },
+                                min: 0,
+                                max: 0.5,
+                                ticks: {
+                                    stepSize: 0.05,
+                                },
+                            },
+                        },
+                    }}
+                />
+            )}
+            <SimulationStats />
+            <Summary />
         </Container >
     );
 };
