@@ -37,7 +37,7 @@ const App = () => {
             labels: stoppingPoints.map(e => e.toFixed(2)),
             datasets: [
                 {
-                    label: "Success Ratio",
+                    label: "Success Ratios",
                     data: chartData.datasets ? chartData.datasets[0].data.slice() : new Array(101).fill(0),
                     backgroundColor: [],
                 },
@@ -55,12 +55,21 @@ const App = () => {
 
         newChartData.datasets[0].backgroundColor = newChartData.datasets[0].data.map((successRatio) => {
             return [
-                [sortedSuccessRatios[0], "black"],
-                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.1)], "red"],
-                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.2)], "orange"],
-                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.3)], "yellow"],
-                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.4)], "green"],
-                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.5)], "blue"],
+                [sortedSuccessRatios[0], "#000000"],
+                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.05)], "#C00000"],
+                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.10)], "#FF0000"],
+                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.15)], "#FF4500"],
+                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.20)], "#FF8C00"],
+                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.25)], "#FFA500"],
+                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.30)], "#FFD700"],
+                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.35)], "#FFFF00"],
+                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.40)], "#ADFF2F"],
+                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.45)], "#7FFF00"],
+                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.50)], "#00FF00"],
+                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.55)], "#00FA9A"],
+                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.60)], "#00FFFF"],
+                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.65)], "#00BFFF"],
+                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.70)], "#1E90FF"],
                 [0, "#CCCCCC"],
             ].find((thresholdColorPair) => successRatio >= thresholdColorPair[0])[1];
         });
@@ -151,15 +160,6 @@ const App = () => {
                     </ul>
                     <li>After all stopping point ratios have been used on the given group of candidates, we start the simulaton again with a new group of candidates until the maximum number of simulations ({numSimulations.toLocaleString()}) have been executed.</li>
                     <li>The colorings on the bars are intended to help with visualization and have no meaning or relevance to the problem.</li>
-                    <ul>
-                        <li>Black: The stopping point ratio with the highest success rate so far.</li>
-                        <li>Red: Top 10%.</li>
-                        <li>Orange: Top 20%.</li>
-                        <li>Yellow: Top 30%.</li>
-                        <li>Green: Top 40%.</li>
-                        <li>Blue: Top 50%.</li>
-                        <li>Gray: Bottom 50%.</li>
-                    </ul>
                 </ul>
             </div>
         </Container >
