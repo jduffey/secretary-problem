@@ -121,7 +121,7 @@ const App = () => {
                 Number of candidates in each simulation (<i>n</i>): {numCandidates.toLocaleString()}
             </pre>
             <div>
-                In summary:
+                <h4>In summary:</h4>
                 <ul>
                     <li>There is a single position to fill.</li>
                     <li>There are <i>n</i> candidates for the position, and the value of <i>n</i> is known.</li>
@@ -135,7 +135,7 @@ const App = () => {
                 </ul>
             </div>
             <div>
-                Explanation of chart:
+                <h4>Explanation of chart:</h4>
                 <ul>
                     <li>On each iteration of the simulation, a new array of {numCandidates.toLocaleString()} candidates is created with each candidate assigned a random value representing their quality.</li>
                     <li>Because each candidate is assigned a random value, this is equivalent in practice to the candidates being assigned a random sequential position for their interview.</li>
