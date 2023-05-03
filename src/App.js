@@ -78,7 +78,7 @@ const App = () => {
     };
 
     useEffect(() => {
-        const msDelayBetweenSimulations = 10;
+        const msDelayBetweenSimulations = 0;
         if (simulationCount < numSimulations) {
             const timer = setTimeout(() => {
                 runSimulation();
