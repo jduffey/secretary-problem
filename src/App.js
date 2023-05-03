@@ -54,23 +54,25 @@ const App = () => {
 
         const sortedSuccessRatios = [...newChartData.datasets[0].data].sort((a, b) => b - a);
 
+        const colorThresholdMapping = [
+            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.01)], "#000000"],
+            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.05)], "#D00000"],
+            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.10)], "#FF8C00"],
+            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.15)], "#FFD700"],
+            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.20)], "#FFFF00"],
+            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.25)], "#ADFF2F"],
+            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.30)], "#7FFF00"],
+            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.35)], "#00FF00"],
+            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.40)], "#00FA9A"],
+            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.45)], "#00FFFF"],
+            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.50)], "#00BFFF"],
+            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.55)], "#1E90FF"],
+            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.60)], "#4444FF"],
+            [0, "#CCCCCC"],
+        ];
+
         newChartData.datasets[0].backgroundColor = newChartData.datasets[0].data.map((successRatio) => {
-            return [
-                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.01)], "#000000"],
-                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.05)], "#D00000"],
-                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.10)], "#FF8C00"],
-                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.15)], "#FFD700"],
-                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.20)], "#FFFF00"],
-                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.25)], "#ADFF2F"],
-                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.30)], "#7FFF00"],
-                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.35)], "#00FF00"],
-                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.40)], "#00FA9A"],
-                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.45)], "#00FFFF"],
-                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.50)], "#00BFFF"],
-                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.55)], "#1E90FF"],
-                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.60)], "#4444FF"],
-                [0, "#CCCCCC"],
-            ].find((thresholdColorPair) => successRatio >= thresholdColorPair[0])[1];
+            return colorThresholdMapping.find((thresholdColorPair) => successRatio >= thresholdColorPair[0])[1];
         });
 
         setChartData(newChartData);
