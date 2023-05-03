@@ -10,6 +10,7 @@ Chart.register(CategoryScale);
 const App = () => {
     const numCandidates = 1000;
     const numSimulations = 100_000;
+    const numStoppingPoints = 1000;
 
     const [chartData, setChartData] = useState({});
     const [simulationCount, setSimulationCount] = useState(0);
@@ -31,14 +32,14 @@ const App = () => {
     };
 
     const runSimulation = () => {
-        const stoppingPoints = Array.from({ length: 101 }, (_, i) => i / 100);
+        const stoppingPoints = Array.from({ length: numStoppingPoints }, (_, i) => i / numStoppingPoints);
 
         const newChartData = {
-            labels: stoppingPoints.map(e => e.toFixed(2)),
+            labels: stoppingPoints.map(e => e.toFixed(3)),
             datasets: [
                 {
                     label: "Success Ratios",
-                    data: chartData.datasets ? chartData.datasets[0].data.slice() : new Array(101).fill(0),
+                    data: chartData.datasets ? chartData.datasets[0].data.slice() : new Array(numStoppingPoints).fill(0),
                     backgroundColor: [],
                 },
             ],
@@ -55,12 +56,9 @@ const App = () => {
 
         newChartData.datasets[0].backgroundColor = newChartData.datasets[0].data.map((successRatio) => {
             return [
-                [sortedSuccessRatios[0], "#000000"],
-                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.02)], "#D00000"],
-                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.04)], "#FF0000"],
-                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.06)], "#FF4500"],
-                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.08)], "#FF8C00"],
-                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.10)], "#FFA500"],
+                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.01)], "#000000"],
+                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.05)], "#D00000"],
+                [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.10)], "#FF8C00"],
                 [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.15)], "#FFD700"],
                 [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.20)], "#FFFF00"],
                 [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.25)], "#ADFF2F"],
@@ -128,7 +126,9 @@ const App = () => {
             <pre>
                 Simulations performed: {simulationCount.toLocaleString()} / {numSimulations.toLocaleString()} ({(simulationCount / numSimulations * 100).toFixed(2)}%)
                 <br />
-                Number of candidates in each simulation (<i>n</i>): {numCandidates.toLocaleString()}
+                Candidates per simulation (<i>n</i>): {numCandidates.toLocaleString()}
+                <br />
+                Number of stopping points: {numStoppingPoints.toLocaleString()}
             </pre>
             <div>
                 <h4>In summary:</h4>
@@ -151,7 +151,7 @@ const App = () => {
                     <li>Because each candidate is assigned a random value, this is equivalent in practice to the candidates being assigned a random sequential position for their interview.</li>
                     <li>For each group of candidates (each simulation), the following occurs:</li>
                     <ul>
-                        <li>For each potential stopping point ratio (i.e. 0 through 1 in increments of 0.01):</li>
+                        <li>For each potential stopping point ratio (i.e. 0 up to and excluding 1, in increments of {(1 / numStoppingPoints).toLocaleString()}):</li>
                         <ul>
                             <li>The first group of candidates is assessed one-by-one and the value of the best candidate is recorded.</li>
                             <li>The interview process continues with the second group until a candidate is found with a higher rating than the best candidate from the first group.</li>
