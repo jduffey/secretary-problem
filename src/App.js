@@ -134,6 +134,34 @@ const App = () => {
                     <ul><li>This is the same as maximizing the expected payoff, with payoff defined to be <b>1</b> for the best candidate and <b>0</b> otherwise.</li></ul>
                 </ul>
             </div>
+            <div>
+                Explanation of chart:
+                <ul>
+                    <li>On each iteration of the simulation, a new array of {numCandidates.toLocaleString()} candidates is created with each candidate assigned a random value representing their quality.</li>
+                    <li>Because each candidate is assigned a random value, this is equivalent in practice to the candidates being assigned a random sequential position for their interview.</li>
+                    <li>For each group of candidates (each simulation), the following occurs:</li>
+                    <ul>
+                        <li>For each potential stopping point ratio (i.e. 0 through 1 in increments of 0.01):</li>
+                        <ul>
+                            <li>The first group of candidates is assessed one-by-one and the value of the best candidate is recorded.</li>
+                            <li>The interview process continues with the second group until a candidate is found with a higher rating than the best candidate from the first group.</li>
+                            <li>If such a candidate is found, a "success" counter is incremented for that stopping point ratio.</li>
+                        </ul>
+                        <li>After the current stopping point ratio is used to find a candidate, we move to the next ratio and perform the same steps.</li>
+                    </ul>
+                    <li>After all stopping point ratios have been used on the given group of candidates, we start the simulaton again with a new group of candidates until the maximum number of simulations ({numSimulations.toLocaleString()}) have been executed.</li>
+                    <li>The colorings on the bars are intended to help with visualization and have no meaning or relevance to the problem.</li>
+                    <ul>
+                        <li>Black: The stopping point ratio with the highest success rate so far.</li>
+                        <li>Red: Top 10%.</li>
+                        <li>Orange: Top 20%.</li>
+                        <li>Yellow: Top 30%.</li>
+                        <li>Green: Top 40%.</li>
+                        <li>Blue: Top 50%.</li>
+                        <li>Gray: Bottom 50%.</li>
+                    </ul>
+                </ul>
+            </div>
         </Container >
     );
 };
