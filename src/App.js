@@ -4,6 +4,7 @@ import { Container, Col, Row } from "react-bootstrap";
 import { Bar } from "react-chartjs-2";
 import { Chart } from "chart.js";
 import { CategoryScale } from "chart.js/auto";
+import colorSchemes from "./colorSchemes";
 
 Chart.register(CategoryScale);
 
@@ -11,28 +12,10 @@ const App = () => {
     const numCandidates = 1000;
     const numStoppingPoints = numCandidates;
     const numSimulations = 100_000;
-    const thresholdColors = [
-        [0.01, "#000000"],
-        [0.05, "#FF00FF"],
-        [0.10, "#FFFF00"],
-        [0.20, "#FF8800"],
-        [0.30, "#D00000"],
-        [0.40, "#00FF00"],
-        [0.50, "#00BB00"],
-        [0.60, "#007700"],
-        [0.70, "#00FFFF"],
-        [0.80, "#00BFFF"],
-        [0.90, "#4444FF"],
-    ].map((pair) => {
-        return {
-            threshold: pair[0],
-            color: pair[1],
-        };
-    });
-    const defaultChartColor = "#CCCCCC";
 
     const [chartData, setChartData] = useState({});
     const [simulationCount, setSimulationCount] = useState(0);
+    const [colorScheme, setColorScheme] = useState(null);
 
     const calculateSuccessRatio = (candidates, stopFraction, currentSimulations, currentSuccessCount) => {
         const stopIndex = Math.floor(numCandidates * stopFraction);
@@ -76,10 +59,10 @@ const App = () => {
         const sortedSuccessRatios = [...newChartData.datasets[0].data].sort((a, b) => b - a);
 
         newChartData.datasets[0].backgroundColor = newChartData.datasets[0].data.map((successRatio) => {
-            const thresholdColor = thresholdColors.find((pair) => {
+            const thresholdColor = colorScheme.thresholds.find((pair) => {
                 return successRatio >= sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * pair.threshold)];
             });
-            return thresholdColor ? thresholdColor.color : defaultChartColor;
+            return thresholdColor ? thresholdColor.color : colorScheme.default;
         });
 
         setChartData(newChartData);
@@ -87,14 +70,26 @@ const App = () => {
     };
 
     useEffect(() => {
+        const useableColorScheme = {
+            thresholds:
+                Object.entries(colorSchemes["HAL 9000"].thresholds).sort(
+                    (a, b) => a.threshold - b.threshold
+                ).map(([threshold, color]) => ({ threshold: parseFloat(threshold), color: color })),
+            default: colorSchemes["HAL 9000"].default,
+        };
+
+        setColorScheme(useableColorScheme);
+    }, []);
+
+    useEffect(() => {
         const msDelayBetweenSimulations = 10;
-        if (simulationCount < numSimulations) {
+        if (simulationCount < numSimulations && colorScheme) {
             const timer = setTimeout(() => {
                 runSimulation();
             }, msDelayBetweenSimulations);
             return () => clearTimeout(timer);
         }
-    }, [simulationCount]);
+    }, [simulationCount, colorScheme]);
 
     const Introduction = () => (
         <div>
@@ -161,10 +156,10 @@ const App = () => {
         </div>
     );
 
-    const ColorLegend = ({ thresholdColors }) => {
+    const ColorLegend = () => {
         return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 20 }}>
-                {thresholdColors.map((colorPair, index) => (
+                {colorScheme.thresholds.map((colorPair, index) => (
                     <div key={index} style={{ display: 'flex', alignItems: 'center', marginRight: 10 }}>
                         <div
                             style={{
@@ -178,6 +173,18 @@ const App = () => {
                         <span>{(colorPair.threshold * 100).toFixed(0)}%</span>
                     </div>
                 ))}
+                <div key={"defaultColor"} style={{ display: 'flex', alignItems: 'center', marginRight: 10 }}>
+                    <div
+                        style={{
+                            width: 20,
+                            height: 20,
+                            backgroundColor: colorScheme.default,
+                            marginRight: 5,
+                            border: '1px solid black',
+                        }}
+                    />
+                    <span>{(1 * 100).toFixed(0)}%</span>
+                </div>
             </div>
         );
     };
@@ -225,9 +232,12 @@ const App = () => {
                 <Col>
                     <SimulationStats />
                 </Col>
-                <Col>
-                    <ColorLegend thresholdColors={thresholdColors} />
-                </Col>
+                {
+                    colorScheme &&
+                    <Col>
+                        <ColorLegend />
+                    </Col>
+                }
             </Row>
             <Row>
                 <ChartExplanation />
