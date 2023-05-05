@@ -70,12 +70,13 @@ const App = () => {
     };
 
     useEffect(() => {
+        const selectedColorScheme = "HAL 9000";
         const useableColorScheme = {
             thresholds:
-                Object.entries(colorSchemes["HAL 9000"].thresholds).sort(
+                Object.entries(colorSchemes[selectedColorScheme].thresholds).sort(
                     (a, b) => a.threshold - b.threshold
                 ).map(([threshold, color]) => ({ threshold: parseFloat(threshold), color: color })),
-            default: colorSchemes["HAL 9000"].default,
+            default: colorSchemes[selectedColorScheme].default,
         };
 
         setColorScheme(useableColorScheme);
