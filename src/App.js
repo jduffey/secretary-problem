@@ -79,7 +79,7 @@ const App = () => {
                 Object.entries(colorSchemes[selectedColorScheme].thresholds).sort(
                     (a, b) => a.threshold - b.threshold
                 ).map(([threshold, color]) => ({ threshold: parseFloat(threshold), color })),
-            default: colorSchemes[selectedColorScheme].default,
+            defaultColor: colorSchemes[selectedColorScheme].defaultColor,
         };
 
         setColorScheme(useableColorScheme);

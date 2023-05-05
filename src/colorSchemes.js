@@ -10,7 +10,7 @@ const colorSchemes = {
             0.60: "#111111",
             0.90: "#000000",
         },
-        default: "#0F536D",
+        defaultColor: "#0F536D",
     },
     "Standard Colors": {
         thresholds: {
@@ -26,7 +26,7 @@ const colorSchemes = {
             0.80: "#00BFFF",
             0.90: "#4444FF",
         },
-        default: "#CCCCCC",
+        defaultColor: "#CCCCCC",
     },
 };
 
