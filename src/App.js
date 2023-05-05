@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Col, Row } from "react-bootstrap";
-import { Bar } from "react-chartjs-2";
-import { Chart } from "chart.js";
-import { CategoryScale } from "chart.js/auto";
-import colorSchemes from "./colorSchemes";
 
-Chart.register(CategoryScale);
+import { Introduction } from "./components/Introduction";
+import { Summary } from "./components/Summary";
+import { SimulationChart } from "./components/SimulationChart";
+import { SimulationStats } from "./components/SimulationStats";
+import { ColorLegend } from "./components/ColorLegend";
+import { ChartExplanation } from "./components/ChartExplanation";
+
+import colorSchemes from "./colorSchemes";
 
 const App = () => {
     const numCandidates = 1000;
@@ -92,104 +95,6 @@ const App = () => {
         }
     }, [simulationCount, colorScheme]);
 
-    const Introduction = () => (
-        <div>
-            <h1>Secretary Problem Simulator</h1>
-            <div>
-                The Secretary Problem is an oft-studied problem in the field of statistics, probabilities, and decision-making. A common description of the problem goes something like this:
-                <div style={{ margin: "10px 80px 0px 30px" }}>
-                    Imagine an administrator who wants to hire the best secretary out of <i>n</i> rankable candidates for a position. The candidates are interviewed one by one in random order. A decision about each particular candidate must be made immediately after the interview. Once rejected, an candidate cannot be recalled. During the interview, the administrator gains information sufficient to rank the candidate among all candidates interviewed so far, but is unaware of the quality of yet unseen candidates. The problem faced by the administrator is <b>deciding the optimal strategy to maximize the probability of selecting the best candidate.</b> If the decision can be deferred to the end, then the problem is trivial -- simply choose the highest-ranked candidate. The difficulty is that the decision to hire a candidate must be made immediately after assessing that candidate.
-                </div>
-            </div>
-        </div>
-    );
-
-    const Summary = () => (
-        <div>
-            <div>
-                <h4>In summary:</h4>
-                <ul>
-                    <li>There is a single position to fill.</li>
-                    <li>There are <i>n</i> candidates for the position, and the value of <i>n</i> is known.</li>
-                    <li>The candidates, if all seen together, can be ranked from best to worst unambiguously.</li>
-                    <ul><li>Note that we are not concerned with the <i>absolute</i> quality of a candidate, only the relative quality (i.e. ranking).</li></ul>
-                    <li>The candidates are interviewed sequentially and in random order.</li>
-                    <li>A candidate is either accepted or rejected immediately after the inteview, and the decision is irrevocable.</li>
-                    <li><b>The decision to accept or reject a candidate can be based only on the relative ranks of the candidates interviewed so far.</b></li>
-                    <li>The administrator&apos;s objective is to have <b>the highest probability of selecting the best candidate of the whole group.</b></li>
-                    <ul><li>This is the same as maximizing the expected payoff, with payoff defined to be <b>1</b> for the best candidate and <b>0</b> otherwise.</li></ul>
-                </ul>
-            </div>
-        </div>
-    );
-
-    const ChartExplanation = () => (
-        <div>
-            <h4>Explanation of chart:</h4>
-            <ul>
-                <li>On each iteration of the simulation, a new array of {numCandidates.toLocaleString()} candidates is created with each candidate assigned a random value representing their quality.</li>
-                <li>Because each candidate is assigned a random value, this is equivalent in practice to the candidates being assigned a random sequential position for their interview.</li>
-                <li>For each group of candidates (each simulation), the following occurs:</li>
-                <ul>
-                    <li>For each potential stopping point ratio (i.e. 0 up to and excluding 1, in increments of {(1 / numStoppingPoints).toLocaleString()}):</li>
-                    <ul>
-                        <li>The first group of candidates is assessed one-by-one and the value of the best candidate is recorded.</li>
-                        <li>The interview process continues with the second group until a candidate is found with a higher rating than the best candidate from the first group.</li>
-                        <li>If such a candidate is found, a &quot;success&quot; counter is incremented for that stopping point ratio.</li>
-                    </ul>
-                    <li>After the current stopping point ratio is used to find a candidate, we move to the next ratio and perform the same steps.</li>
-                </ul>
-                <li>After all stopping point ratios have been used on the given group of candidates, we start the simulaton again with a new group of candidates until the maximum number of simulations ({numSimulations.toLocaleString()}) have been executed.</li>
-                <li>The colorings on the bars are intended to help with visualization and have no meaning or relevance to the problem.</li>
-            </ul>
-        </div>
-    )
-
-    const SimulationStats = () => (
-        <div>
-            <pre>
-                Simulations performed: {simulationCount.toLocaleString()} / {numSimulations.toLocaleString()} ({(simulationCount / numSimulations * 100).toFixed(2)}%)
-                <br />
-                Candidates per simulation (<i>n</i>): {numCandidates.toLocaleString()}
-                <br />
-                Number of stopping points: {numStoppingPoints.toLocaleString()}
-            </pre>
-        </div>
-    );
-
-    const ColorLegend = () => {
-        return (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 20 }}>
-                {colorScheme.thresholds.map((colorPair) => (
-                    <div key={colorPair[0]} style={{ display: 'flex', alignItems: 'center', marginRight: 10 }}>
-                        <div
-                            style={{
-                                width: 20,
-                                height: 20,
-                                backgroundColor: colorPair.color,
-                                marginRight: 5,
-                                border: '1px solid black',
-                            }}
-                        />
-                        <span>{(colorPair.threshold * 100).toFixed(0)}%</span>
-                    </div>
-                ))}
-                <div key={"defaultColor"} style={{ display: 'flex', alignItems: 'center', marginRight: 10 }}>
-                    <div
-                        style={{
-                            width: 20,
-                            height: 20,
-                            backgroundColor: colorScheme.default,
-                            marginRight: 5,
-                            border: '1px solid black',
-                        }}
-                    />
-                    <span>{(1 * 100).toFixed(0)}%</span>
-                </div>
-            </div>
-        );
-    };
-
     return (
         <Container>
             <Row>
@@ -201,47 +106,36 @@ const App = () => {
                 </Col>
             </Row>
             <Row>
-                {chartData.labels && chartData.datasets && (
-                    <Bar
-                        data={chartData}
-                        options={{
-                            scales: {
-                                x: {
-                                    type: "category",
-                                    title: {
-                                        display: true,
-                                        text: "Stopping Point: The ratio of candidates interviewed before allowing a selection to be made.",
-                                    },
-                                },
-                                y: {
-                                    title: {
-                                        display: true,
-                                        text: "Success Ratio: The ratio of simulations where the best candidate was selected.",
-                                    },
-                                    min: 0,
-                                    max: 0.5,
-                                    ticks: {
-                                        stepSize: 0.05,
-                                    },
-                                },
-                            },
-                        }}
+                {chartData.labels && chartData.datasets &&
+                    <SimulationChart
+                        chartData={chartData}
                     />
-                )}
+                }
             </Row>
             <Row>
                 <Col>
-                    <SimulationStats />
+                    <SimulationStats
+                        simulationCount={simulationCount}
+                        numSimulations={numSimulations}
+                        numCandidates={numCandidates}
+                        numStoppingPoints={numStoppingPoints}
+                    />
                 </Col>
                 {
                     colorScheme &&
                     <Col>
-                        <ColorLegend />
+                        <ColorLegend
+                            colorScheme={colorScheme}
+                        />
                     </Col>
                 }
             </Row>
             <Row>
-                <ChartExplanation />
+                <ChartExplanation
+                    numCandidates={numCandidates}
+                    numStoppingPoints={numStoppingPoints}
+                    numSimulations={numSimulations}
+                />
             </Row>
         </Container >
     );
