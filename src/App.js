@@ -158,6 +158,27 @@ const App = () => {
         </div>
     );
 
+    const ColorLegend = ({ thresholdColors }) => {
+        return (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 20 }}>
+                {thresholdColors.map((colorPair, index) => (
+                    <div key={index} style={{ display: 'flex', alignItems: 'center', marginRight: 10 }}>
+                        <div
+                            style={{
+                                width: 20,
+                                height: 20,
+                                backgroundColor: colorPair.color,
+                                marginRight: 5,
+                                border: '1px solid black',
+                            }}
+                        />
+                        <span>{(colorPair.threshold * 100).toFixed(0)}%</span>
+                    </div>
+                ))}
+            </div>
+        );
+    };
+
     return (
         <Container>
             <Introduction />
@@ -188,6 +209,7 @@ const App = () => {
                     }}
                 />
             )}
+            <ColorLegend thresholdColors={thresholdColors} />
             <SimulationStats />
             <Summary />
         </Container >
