@@ -9,8 +9,27 @@ Chart.register(CategoryScale);
 
 const App = () => {
     const numCandidates = 1000;
+    const numStoppingPoints = numCandidates;
     const numSimulations = 100_000;
-    const numStoppingPoints = 1000;
+    const thresholdColors = [
+        [0.01, "#000000"],
+        [0.05, "#FF00FF"],
+        [0.10, "#FFFF00"],
+        [0.20, "#FF8800"],
+        [0.30, "#D00000"],
+        [0.40, "#00FF00"],
+        [0.50, "#00BB00"],
+        [0.60, "#007700"],
+        [0.70, "#00FFFF"],
+        [0.80, "#00BFFF"],
+        [0.90, "#4444FF"],
+    ].map((pair) => {
+        return {
+            threshold: pair[0],
+            color: pair[1],
+        };
+    });
+    const defaultChartColor = "#CCCCCC";
 
     const [chartData, setChartData] = useState({});
     const [simulationCount, setSimulationCount] = useState(0);
@@ -41,6 +60,8 @@ const App = () => {
                     label: "Success Ratios",
                     data: chartData.datasets ? chartData.datasets[0].data.slice() : new Array(numStoppingPoints).fill(0),
                     backgroundColor: [],
+                    barPercentage: 1.0,
+                    categoryPercentage: 1.0,
                 },
             ],
         };
@@ -54,25 +75,11 @@ const App = () => {
 
         const sortedSuccessRatios = [...newChartData.datasets[0].data].sort((a, b) => b - a);
 
-        const colorThresholdMapping = [
-            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.01)], "#000000"],
-            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.05)], "#D00000"],
-            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.10)], "#FF8C00"],
-            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.15)], "#FFD700"],
-            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.20)], "#FFFF00"],
-            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.25)], "#ADFF2F"],
-            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.30)], "#7FFF00"],
-            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.35)], "#00FF00"],
-            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.40)], "#00FA9A"],
-            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.45)], "#00FFFF"],
-            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.50)], "#00BFFF"],
-            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.55)], "#1E90FF"],
-            [sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * 0.60)], "#4444FF"],
-            [0, "#CCCCCC"],
-        ];
-
         newChartData.datasets[0].backgroundColor = newChartData.datasets[0].data.map((successRatio) => {
-            return colorThresholdMapping.find((thresholdColorPair) => successRatio >= thresholdColorPair[0])[1];
+            const thresholdColor = thresholdColors.find((pair) => {
+                return successRatio >= sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * pair.threshold)];
+            });
+            return thresholdColor ? thresholdColor.color : defaultChartColor;
         });
 
         setChartData(newChartData);
@@ -80,7 +87,7 @@ const App = () => {
     };
 
     useEffect(() => {
-        const msDelayBetweenSimulations = 0;
+        const msDelayBetweenSimulations = 10;
         if (simulationCount < numSimulations) {
             const timer = setTimeout(() => {
                 runSimulation();
