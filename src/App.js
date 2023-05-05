@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Container } from "react-bootstrap";
+import { Container, Col, Row } from "react-bootstrap";
 import { Bar } from "react-chartjs-2";
 import { Chart } from "chart.js";
 import { CategoryScale } from "chart.js/auto";
@@ -124,27 +124,30 @@ const App = () => {
                     <ul><li>This is the same as maximizing the expected payoff, with payoff defined to be <b>1</b> for the best candidate and <b>0</b> otherwise.</li></ul>
                 </ul>
             </div>
-            <div>
-                <h4>Explanation of chart:</h4>
-                <ul>
-                    <li>On each iteration of the simulation, a new array of {numCandidates.toLocaleString()} candidates is created with each candidate assigned a random value representing their quality.</li>
-                    <li>Because each candidate is assigned a random value, this is equivalent in practice to the candidates being assigned a random sequential position for their interview.</li>
-                    <li>For each group of candidates (each simulation), the following occurs:</li>
-                    <ul>
-                        <li>For each potential stopping point ratio (i.e. 0 up to and excluding 1, in increments of {(1 / numStoppingPoints).toLocaleString()}):</li>
-                        <ul>
-                            <li>The first group of candidates is assessed one-by-one and the value of the best candidate is recorded.</li>
-                            <li>The interview process continues with the second group until a candidate is found with a higher rating than the best candidate from the first group.</li>
-                            <li>If such a candidate is found, a "success" counter is incremented for that stopping point ratio.</li>
-                        </ul>
-                        <li>After the current stopping point ratio is used to find a candidate, we move to the next ratio and perform the same steps.</li>
-                    </ul>
-                    <li>After all stopping point ratios have been used on the given group of candidates, we start the simulaton again with a new group of candidates until the maximum number of simulations ({numSimulations.toLocaleString()}) have been executed.</li>
-                    <li>The colorings on the bars are intended to help with visualization and have no meaning or relevance to the problem.</li>
-                </ul>
-            </div>
         </div>
     );
+
+    const ChartExplanation = () => (
+        <div>
+            <h4>Explanation of chart:</h4>
+            <ul>
+                <li>On each iteration of the simulation, a new array of {numCandidates.toLocaleString()} candidates is created with each candidate assigned a random value representing their quality.</li>
+                <li>Because each candidate is assigned a random value, this is equivalent in practice to the candidates being assigned a random sequential position for their interview.</li>
+                <li>For each group of candidates (each simulation), the following occurs:</li>
+                <ul>
+                    <li>For each potential stopping point ratio (i.e. 0 up to and excluding 1, in increments of {(1 / numStoppingPoints).toLocaleString()}):</li>
+                    <ul>
+                        <li>The first group of candidates is assessed one-by-one and the value of the best candidate is recorded.</li>
+                        <li>The interview process continues with the second group until a candidate is found with a higher rating than the best candidate from the first group.</li>
+                        <li>If such a candidate is found, a "success" counter is incremented for that stopping point ratio.</li>
+                    </ul>
+                    <li>After the current stopping point ratio is used to find a candidate, we move to the next ratio and perform the same steps.</li>
+                </ul>
+                <li>After all stopping point ratios have been used on the given group of candidates, we start the simulaton again with a new group of candidates until the maximum number of simulations ({numSimulations.toLocaleString()}) have been executed.</li>
+                <li>The colorings on the bars are intended to help with visualization and have no meaning or relevance to the problem.</li>
+            </ul>
+        </div>
+    )
 
     const SimulationStats = () => (
         <div>
@@ -181,37 +184,54 @@ const App = () => {
 
     return (
         <Container>
-            <Introduction />
-            {chartData.labels && chartData.datasets && (
-                <Bar
-                    data={chartData}
-                    options={{
-                        scales: {
-                            x: {
-                                type: "category",
-                                title: {
-                                    display: true,
-                                    text: "Stopping Point: The ratio of candidates interviewed before allowing a selection to be made.",
+            <Row>
+                <Col>
+                    <Introduction />
+                </Col>
+                <Col>
+                    <Summary />
+                </Col>
+            </Row>
+            <Row>
+                {chartData.labels && chartData.datasets && (
+                    <Bar
+                        data={chartData}
+                        options={{
+                            scales: {
+                                x: {
+                                    type: "category",
+                                    title: {
+                                        display: true,
+                                        text: "Stopping Point: The ratio of candidates interviewed before allowing a selection to be made.",
+                                    },
+                                },
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: "Success Ratio: The ratio of simulations where the best candidate was selected.",
+                                    },
+                                    min: 0,
+                                    max: 0.5,
+                                    ticks: {
+                                        stepSize: 0.05,
+                                    },
                                 },
                             },
-                            y: {
-                                title: {
-                                    display: true,
-                                    text: "Success Ratio: The ratio of simulations where the best candidate was selected.",
-                                },
-                                min: 0,
-                                max: 0.5,
-                                ticks: {
-                                    stepSize: 0.05,
-                                },
-                            },
-                        },
-                    }}
-                />
-            )}
-            <ColorLegend thresholdColors={thresholdColors} />
-            <SimulationStats />
-            <Summary />
+                        }}
+                    />
+                )}
+            </Row>
+            <Row>
+                <Col>
+                    <SimulationStats />
+                </Col>
+                <Col>
+                    <ColorLegend thresholdColors={thresholdColors} />
+                </Col>
+            </Row>
+            <Row>
+                <ChartExplanation />
+            </Row>
         </Container >
     );
 };
