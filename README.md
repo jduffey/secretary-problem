@@ -1,3 +1,5 @@
+[![DeepSource](https://app.deepsource.com/gh/jduffey/secretary-problem.svg/?label=active+issues&show_trend=true&token=1mHrnV1gbC7OeUbBaGG4kZxW)](https://app.deepsource.com/gh/jduffey/secretary-problem/?ref=repository-badge)
+
 # Secretary Problem Simulator
 
 This application simulates the Secretary Problem, a classic problem in probability and decision-making. The problem involves an administrator trying to hire the best candidate among a pool of _n_ candidates. The challenge lies in making the hiring decision immediately after each interview, without knowing the quality of future candidates.

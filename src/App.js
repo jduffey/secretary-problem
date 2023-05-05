@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Col, Row } from "react-bootstrap";
 import { Bar } from "react-chartjs-2";
@@ -75,7 +75,7 @@ const App = () => {
             thresholds:
                 Object.entries(colorSchemes[selectedColorScheme].thresholds).sort(
                     (a, b) => a.threshold - b.threshold
-                ).map(([threshold, color]) => ({ threshold: parseFloat(threshold), color: color })),
+                ).map(([threshold, color]) => ({ threshold: parseFloat(threshold), color })),
             default: colorSchemes[selectedColorScheme].default,
         };
 
@@ -116,7 +116,7 @@ const App = () => {
                     <li>The candidates are interviewed sequentially and in random order.</li>
                     <li>A candidate is either accepted or rejected immediately after the inteview, and the decision is irrevocable.</li>
                     <li><b>The decision to accept or reject a candidate can be based only on the relative ranks of the candidates interviewed so far.</b></li>
-                    <li>The administrator's objective is to have <b>the highest probability of selecting the best candidate of the whole group.</b></li>
+                    <li>The administrator&apos;s objective is to have <b>the highest probability of selecting the best candidate of the whole group.</b></li>
                     <ul><li>This is the same as maximizing the expected payoff, with payoff defined to be <b>1</b> for the best candidate and <b>0</b> otherwise.</li></ul>
                 </ul>
             </div>
@@ -135,7 +135,7 @@ const App = () => {
                     <ul>
                         <li>The first group of candidates is assessed one-by-one and the value of the best candidate is recorded.</li>
                         <li>The interview process continues with the second group until a candidate is found with a higher rating than the best candidate from the first group.</li>
-                        <li>If such a candidate is found, a "success" counter is incremented for that stopping point ratio.</li>
+                        <li>If such a candidate is found, a &quot;success&quot; counter is incremented for that stopping point ratio.</li>
                     </ul>
                     <li>After the current stopping point ratio is used to find a candidate, we move to the next ratio and perform the same steps.</li>
                 </ul>
@@ -160,8 +160,8 @@ const App = () => {
     const ColorLegend = () => {
         return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 20 }}>
-                {colorScheme.thresholds.map((colorPair, index) => (
-                    <div key={index} style={{ display: 'flex', alignItems: 'center', marginRight: 10 }}>
+                {colorScheme.thresholds.map((colorPair) => (
+                    <div key={colorPair[0]} style={{ display: 'flex', alignItems: 'center', marginRight: 10 }}>
                         <div
                             style={{
                                 width: 20,
