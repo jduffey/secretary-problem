@@ -28,6 +28,9 @@ export const SimulationChart = ({ chartData }) => (
                     },
                 },
             },
+            animation: {
+                duration: 0,
+            },
         }}
     />
 );
