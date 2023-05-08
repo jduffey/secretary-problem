@@ -15,11 +15,18 @@ const NUM_CANDIDATES = 1000;
 const NUM_STOPPING_POINTS = NUM_CANDIDATES;
 const NUM_SIMULATIONS = 100_000;
 const STOPPING_POINTS = Array.from({ length: NUM_STOPPING_POINTS }, (_, i) => i / NUM_STOPPING_POINTS);
+const COLOR_SCHEME_NAME = "HAL 9000";
+const COLOR_SCHEME = {
+    thresholds:
+        Object.entries(colorSchemes[COLOR_SCHEME_NAME].thresholds)
+            .sort((a, b) => a.threshold - b.threshold)
+            .map(([threshold, color]) => ({ threshold: parseFloat(threshold), color })),
+    defaultColor: colorSchemes[COLOR_SCHEME_NAME].defaultColor,
+};
 
 const App = () => {
     const [chartData, setChartData] = useState({});
     const [simulationCount, setSimulationCount] = useState(0);
-    const [colorScheme, setColorScheme] = useState(null);
 
     const calculateSuccessRatio = (candidates, stopFraction, currentSimulations, currentSuccessCount) => {
         const stopIndex = Math.floor(NUM_CANDIDATES * stopFraction);
@@ -37,63 +44,45 @@ const App = () => {
         return currentSuccessCount / (currentSimulations + 1);
     };
 
-    const runSimulation = () => {
-
-        const newChartData = {
-            labels: STOPPING_POINTS.map(e => e.toFixed(3)),
-            datasets: [
-                {
-                    label: "Success Ratios",
-                    data: chartData.datasets ? chartData.datasets[0].data.slice() : new Array(NUM_STOPPING_POINTS).fill(0),
-                    backgroundColor: [],
-                    barPercentage: 1.0,
-                    categoryPercentage: 1.0,
-                },
-            ],
-        };
-
-        const candidates = Array.from({ length: NUM_CANDIDATES }, () => Math.random());
-
-        STOPPING_POINTS.forEach((stopRatio, index) => {
-            const currentSuccessCount = chartData.datasets ? chartData.datasets[0].data[index] * simulationCount : 0;
-            newChartData.datasets[0].data[index] = calculateSuccessRatio(candidates, stopRatio, simulationCount, currentSuccessCount);
-        });
-
-        const sortedSuccessRatios = [...newChartData.datasets[0].data].sort((a, b) => b - a);
-
-        newChartData.datasets[0].backgroundColor = newChartData.datasets[0].data.map((successRatio) => {
-            const thresholdPair = colorScheme.thresholds.find((pair) => {
-                return successRatio >= sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * pair.threshold)];
-            });
-            return thresholdPair ? thresholdPair.color : colorScheme.defaultColor;
-        });
-
-        setChartData(newChartData);
-        setSimulationCount(simulationCount + 1);
-    };
-
-    useEffect(() => {
-        const selectedColorScheme = "Standard Colors";
-        const useableColorScheme = {
-            thresholds:
-                Object.entries(colorSchemes[selectedColorScheme].thresholds)
-                    .sort((a, b) => a.threshold - b.threshold)
-                    .map(([threshold, color]) => ({ threshold: parseFloat(threshold), color })),
-            defaultColor: colorSchemes[selectedColorScheme].defaultColor,
-        };
-
-        setColorScheme(useableColorScheme);
-    }, []);
-
     useEffect(() => {
         const msDelayBetweenSimulations = 10;
         if (simulationCount < NUM_SIMULATIONS) {
             const timer = setTimeout(() => {
-                runSimulation();
+                const newChartData = {
+                    labels: STOPPING_POINTS.map(e => e.toFixed(3)),
+                    datasets: [
+                        {
+                            label: "Success Ratios",
+                            data: chartData.datasets ? chartData.datasets[0].data.slice() : new Array(NUM_STOPPING_POINTS).fill(0),
+                            backgroundColor: [],
+                            barPercentage: 1.0,
+                            categoryPercentage: 1.0,
+                        },
+                    ],
+                };
+
+                const candidates = Array.from({ length: NUM_CANDIDATES }, () => Math.random());
+
+                STOPPING_POINTS.forEach((stopRatio, index) => {
+                    const currentSuccessCount = chartData.datasets ? chartData.datasets[0].data[index] * simulationCount : 0;
+                    newChartData.datasets[0].data[index] = calculateSuccessRatio(candidates, stopRatio, simulationCount, currentSuccessCount);
+                });
+
+                const sortedSuccessRatios = [...newChartData.datasets[0].data].sort((a, b) => b - a);
+
+                newChartData.datasets[0].backgroundColor = newChartData.datasets[0].data.map((successRatio) => {
+                    const thresholdPair = COLOR_SCHEME.thresholds.find((pair) => {
+                        return successRatio >= sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * pair.threshold)];
+                    });
+                    return thresholdPair ? thresholdPair.color : COLOR_SCHEME.defaultColor;
+                });
+
+                setChartData(newChartData);
+                setSimulationCount(simulationCount + 1);
             }, msDelayBetweenSimulations);
             return () => clearTimeout(timer);
         }
-    }, [simulationCount, colorScheme]);
+    }, [simulationCount, chartData.datasets]);
 
     return (
         <Container>
@@ -122,10 +111,10 @@ const App = () => {
                     />
                 </Col>
                 {
-                    colorScheme &&
+                    COLOR_SCHEME &&
                     <Col>
                         <ColorLegend
-                            colorScheme={colorScheme}
+                            colorScheme={COLOR_SCHEME}
                         />
                     </Col>
                 }
