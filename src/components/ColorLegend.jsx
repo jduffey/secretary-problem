@@ -1,5 +1,5 @@
 export const ColorLegend = ({ colorScheme }) => {
-    const decimalPrecision = 2;
+    const decimalPrecision = 1;
 
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 20 }}>

@@ -9,7 +9,7 @@ import { SimulationManager } from "./components/SimulationManager";
 
 import colorSchemes from "./colorSchemes";
 
-const NUM_CANDIDATES = 500;
+const NUM_CANDIDATES = 1000;
 const NUM_STOPPING_POINTS = NUM_CANDIDATES;
 const NUM_SIMULATIONS = 100_000;
 const COLOR_SCHEME_NAME = {

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-
 import { Container, Col, Row } from "react-bootstrap";
 
 import { SimulationChart } from "./SimulationChart";
@@ -8,11 +7,12 @@ import { SimulationStats } from "./SimulationStats";
 export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulations, colorScheme }) => {
     const [chartData, setChartData] = useState({});
     const [simulationCount, setSimulationCount] = useState(0);
+    const [successCounts, setSuccessCounts] = useState(new Array(numStoppingPoints).fill(0));
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
     const STOPPING_POINTS = Array.from({ length: numStoppingPoints }, (_, i) => i / numStoppingPoints);
 
-    const calculateSuccessRatio = (candidates, stopFraction, currentSimulations, currentSuccessCount) => {
+    const bestCandidateChosen = (candidates, stopFraction) => {
         const stopIndex = Math.floor(numCandidates * stopFraction);
 
         const maxInFirstPhase = Math.max(...candidates.slice(0, stopIndex));
@@ -21,11 +21,7 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
         const chosenCandidate = remainingCandidates.find((candidate) => candidate > maxInFirstPhase);
         const bestCandidate = Math.max(...candidates);
 
-        if (chosenCandidate === bestCandidate) {
-            currentSuccessCount++;
-        }
-
-        return currentSuccessCount / (currentSimulations + 1);
+        return chosenCandidate === bestCandidate;
     };
 
     useEffect(() => {
@@ -46,25 +42,29 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
         const msDelayBetweenSimulations = 10;
         if (simulationCount < numSimulations) {
             const timer = setTimeout(() => {
+                const candidates = Array.from({ length: numCandidates }, () => Math.random());
+                const newSuccessCounts = [...successCounts];
+
+                STOPPING_POINTS.forEach((stopRatio, index) => {
+                    if (bestCandidateChosen(candidates, stopRatio)) {
+                        newSuccessCounts[index]++;
+                    }
+                });
+
+                setSuccessCounts(newSuccessCounts);
+
                 const newChartData = {
                     labels: STOPPING_POINTS.map(e => e.toFixed(3)),
                     datasets: [
                         {
                             label: "Success Ratios",
-                            data: chartData.datasets ? chartData.datasets[0].data.slice() : new Array(numStoppingPoints).fill(0),
+                            data: newSuccessCounts.map((successCount) => successCount / (simulationCount + 1)),
                             backgroundColor: [],
                             barPercentage: 1.0,
                             categoryPercentage: 1.0,
                         },
                     ],
                 };
-
-                const candidates = Array.from({ length: numCandidates }, () => Math.random());
-
-                STOPPING_POINTS.forEach((stopRatio, index) => {
-                    const currentSuccessCount = chartData.datasets ? chartData.datasets[0].data[index] * simulationCount : 0;
-                    newChartData.datasets[0].data[index] = calculateSuccessRatio(candidates, stopRatio, simulationCount, currentSuccessCount);
-                });
 
                 const sortedSuccessRatios = [...newChartData.datasets[0].data].sort((a, b) => b - a);
 
