@@ -15,10 +15,8 @@ const NUM_SIMULATIONS = 100_000;
 const COLOR_SCHEME_NAME = {
     0: "Standard Colors",
     1: "HAL 9000",
-    2: "Mint Chocolate Chip",
-    3: "Roulette",
-    4: "Sunspot",
-}[1];
+    2: "Sunspot",
+}[2];
 const COLOR_SCHEME = {
     thresholds:
         Object.entries(colorSchemes[COLOR_SCHEME_NAME].thresholds)
