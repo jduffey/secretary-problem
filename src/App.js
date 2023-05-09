@@ -11,11 +11,17 @@ import { ChartExplanation } from "./components/ChartExplanation";
 
 import colorSchemes from "./colorSchemes";
 
-const NUM_CANDIDATES = 1000;
+const NUM_CANDIDATES = 500;
 const NUM_STOPPING_POINTS = NUM_CANDIDATES;
 const NUM_SIMULATIONS = 100_000;
 const STOPPING_POINTS = Array.from({ length: NUM_STOPPING_POINTS }, (_, i) => i / NUM_STOPPING_POINTS);
-const COLOR_SCHEME_NAME = "HAL 9000";
+const COLOR_SCHEME_NAME = {
+    0: "Standard Colors",
+    1: "HAL 9000",
+    2: "Mint Chocolate Chip",
+    3: "Roulette",
+    4: "Sunspot",
+}[4];
 const COLOR_SCHEME = {
     thresholds:
         Object.entries(colorSchemes[COLOR_SCHEME_NAME].thresholds)
