@@ -65,7 +65,7 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
             }, msDelayBetweenSimulations);
             return () => clearTimeout(timer);
         }
-    }, [simulationCount, chartData.datasets]);
+    });
 
     return (
         <Container>

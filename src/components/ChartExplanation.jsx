@@ -1,10 +1,9 @@
 export const ChartExplanation = ({ numCandidates, numStoppingPoints, numSimulations }) => {
     return (
         <div>
-            <h4>Explanation of chart:</h4>
+            <h4 style={{ textAlign: "center" }}>The chart represents the continuously-updated average success ratios on a series of {numSimulations.toLocaleString()} simulations.</h4>
             <ul>
                 <li>On each iteration of the simulation, a new array of {numCandidates.toLocaleString()} candidates is created with each candidate assigned a random value representing their quality.</li>
-                <li>Because each candidate is assigned a random value, this is equivalent in practice to the candidates being assigned a random sequential position for their interview.</li>
                 <li>For each group of candidates (each simulation), the following occurs:</li>
                 <ul>
                     <li>For each potential stopping point ratio (i.e. 0 up to and excluding 1, in increments of {(1 / numStoppingPoints).toLocaleString()}):</li>

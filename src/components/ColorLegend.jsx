@@ -1,4 +1,6 @@
 export const ColorLegend = ({ colorScheme }) => {
+    const decimalPrecision = 2;
+
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 20 }}>
             {
@@ -13,7 +15,7 @@ export const ColorLegend = ({ colorScheme }) => {
                                 border: '1px solid black',
                             }}
                         />
-                        <span>{(colorPair.threshold * 100).toFixed(0)}%</span>
+                        <span>{(colorPair.threshold * 100).toFixed(decimalPrecision)}%</span>
                     </div>
                 ))
             }
@@ -27,7 +29,7 @@ export const ColorLegend = ({ colorScheme }) => {
                         border: '1px solid black',
                     }}
                 />
-                <span>{(1 * 100).toFixed(0)}%</span>
+                <span>{(1 * 100).toFixed(decimalPrecision)}%</span>
             </div>
         </div>
     );
