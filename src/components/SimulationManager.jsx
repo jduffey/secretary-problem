@@ -8,6 +8,7 @@ import { SimulationStats } from "./SimulationStats";
 export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulations, colorScheme }) => {
     const [chartData, setChartData] = useState({});
     const [simulationCount, setSimulationCount] = useState(0);
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
     const STOPPING_POINTS = Array.from({ length: numStoppingPoints }, (_, i) => i / numStoppingPoints);
 
@@ -26,6 +27,20 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
 
         return currentSuccessCount / (currentSimulations + 1);
     };
+
+    useEffect(() => {
+        // We're using this effect to force a re-render of the chart when the window is resized
+        // Previously, the chart would shrink properly but would not expand when the window was made larger
+        const handleWindowResize = () => {
+            setWindowWidth(window.innerWidth);
+        };
+
+        window.addEventListener('resize', handleWindowResize);
+
+        return () => {
+            window.removeEventListener('resize', handleWindowResize);
+        };
+    }, []);
 
     useEffect(() => {
         const msDelayBetweenSimulations = 10;
@@ -72,6 +87,7 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
             <Row>
                 {chartData.labels && chartData.datasets &&
                     <SimulationChart
+                        key={windowWidth}
                         chartData={chartData}
                     />
                 }

@@ -8,18 +8,19 @@ export const SimulationChart = ({ chartData }) => (
     <Bar
         data={chartData}
         options={{
+            aspectRatio: 3,
             scales: {
                 x: {
                     type: "category",
                     title: {
                         display: true,
-                        text: "Stopping Point: The ratio of candidates interviewed before allowing a selection to be made.",
+                        text: "Stopping Point",
                     },
                 },
                 y: {
                     title: {
                         display: true,
-                        text: "Success Ratio: The ratio of simulations where the best candidate was selected.",
+                        text: "Success Ratio",
                     },
                     min: 0,
                     max: 0.5,
