@@ -12,7 +12,7 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
 
     const STOPPING_POINTS = Array.from({ length: numStoppingPoints }, (_, i) => i / numStoppingPoints);
 
-    const wasSuccessful = (candidates, stopFraction) => {
+    const bestCandidateChosen = (candidates, stopFraction) => {
         const stopIndex = Math.floor(numCandidates * stopFraction);
 
         const maxInFirstPhase = Math.max(...candidates.slice(0, stopIndex));
@@ -46,7 +46,7 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
                 const newSuccessCounts = [...successCounts];
 
                 STOPPING_POINTS.forEach((stopRatio, index) => {
-                    if (wasSuccessful(candidates, stopRatio)) {
+                    if (bestCandidateChosen(candidates, stopRatio)) {
                         newSuccessCounts[index]++;
                     }
                 });
