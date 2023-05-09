@@ -24,6 +24,12 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
         return chosenCandidate === bestCandidate;
     };
 
+    const resetSimulation = () => {
+        setSimulationCount(0);
+        setSimulationCount(0);
+        setSuccessCounts(new Array(numStoppingPoints).fill(0));
+    };
+
     useEffect(() => {
         // We're using this effect to force a re-render of the chart when the window is resized
         // Previously, the chart would shrink properly but would not expand when the window was made larger
@@ -101,7 +107,12 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
                         numStoppingPoints={numStoppingPoints}
                     />
                 </Col>
+                <Col>
+                    <button onClick={() => resetSimulation()}>
+                        Reset
+                    </button>
+                </Col>
             </Row>
-        </Container>
+        </Container >
     );
 }
