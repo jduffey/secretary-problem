@@ -1,6 +1,6 @@
 let counter = 0;
 export const ChartExplanation = ({ numCandidates, numStoppingPoints, numSimulations }) => {
-    // console.log(`ChartExplanation render #${++counter}`);
+    console.log(`ChartExplanation render #${++counter}`);
     return (
         <div>
             <h4>Explanation of chart:</h4>
