@@ -3,8 +3,24 @@ import { Container, Col, Row } from "react-bootstrap";
 
 import { SimulationChart } from "./SimulationChart";
 import { SimulationStats } from "./SimulationStats";
+import { ColorLegend } from "./ColorLegend";
 
-export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulations, colorScheme }) => {
+import colorSchemes from "../colorSchemes";
+
+const COLOR_SCHEME_NAME = {
+    0: "Standard Colors",
+    1: "HAL 9000",
+    2: "Sunspot",
+}[2];
+const colorScheme = {
+    thresholds:
+        Object.entries(colorSchemes[COLOR_SCHEME_NAME].thresholds)
+            .sort((a, b) => a.threshold - b.threshold)
+            .map(([threshold, color]) => ({ threshold: parseFloat(threshold), color })),
+    defaultColor: colorSchemes[COLOR_SCHEME_NAME].defaultColor,
+};
+
+export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulations }) => {
     const [chartData, setChartData] = useState({});
     const [simulationCount, setSimulationCount] = useState(0);
     const [successCounts, setSuccessCounts] = useState(new Array(numStoppingPoints).fill(0));
@@ -112,6 +128,11 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
                         Reset
                     </button>
                 </Col>
+            </Row>
+            <Row>
+                <ColorLegend
+                    colorScheme={colorScheme}
+                />
             </Row>
         </Container >
     );
