@@ -35,9 +35,10 @@ jobs:
       run: find . -mindepth 1 -maxdepth 1 ! -name 'build' ! -name '.git' ! -name '.gitignore' -exec rm -r {} \; && cp -R build/* . && rm -r build
 
     - name: Checkout "deploy" branch
+      # reminder that this will fail if there is not already a branch named "deploy"
       run: |
         git fetch
-        git switch -c deploy || git switch deploy
+        git checkout -B deploy origin/deploy || git checkout -b deploy
 
     - name: Set Git author as GitHub Actions and commit
       # note: if there are no changes this will fail because there is nothing to commit
