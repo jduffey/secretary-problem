@@ -128,11 +128,11 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
                         Reset
                     </button>
                 </Col>
-            </Row>
-            <Row>
-                <ColorLegend
-                    colorScheme={colorScheme}
-                />
+                <Col>
+                    <ColorLegend
+                        colorScheme={colorScheme}
+                    />
+                </Col>
             </Row>
         </Container >
     );

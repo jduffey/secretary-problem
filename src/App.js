@@ -24,14 +24,14 @@ const App = () => {
                 />
             </Row>
             <Row>
-                <Summary />
-            </Row>
-            <Row>
                 <ChartExplanation
                     numCandidates={NUM_CANDIDATES}
                     numStoppingPoints={NUM_STOPPING_POINTS}
                     numSimulations={NUM_SIMULATIONS}
                 />
+            </Row>
+            <Row>
+                <Summary />
             </Row>
         </Container >
     );
