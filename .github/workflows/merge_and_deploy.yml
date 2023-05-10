@@ -36,9 +36,12 @@ jobs:
       run: |
         git fetch
         git checkout -B deploy origin/deploy || git checkout -b deploy
+<<<<<<< HEAD
 
     - name: Retain only build files
       run: find . -mindepth 1 -maxdepth 1 ! -name 'build' ! -name '.git' ! -name '.gitignore' -exec rm -r {} \; && cp -R build/* . && rm -r build
+=======
+>>>>>>> main
 
     - name: Set Git author as GitHub Actions and commit
       # note: if there are no changes this will fail because there is nothing to commit
