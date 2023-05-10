@@ -50,5 +50,5 @@ jobs:
         # reminder for generating a Personal Access Token:
         # GitHub avatar -> Settings -> Developer settings (bottom of left sidebar)
         # Then in repo settings -> Secrets and variables -> Actions -> then add the PAT to Repository secrets
-        github_token: ${{ secrets.GH_PAT }}
+        github_token: ${{ secrets.SECRETARY_PROBLEM_DEPLOYMENT_PAT }}
         branch: deploy
