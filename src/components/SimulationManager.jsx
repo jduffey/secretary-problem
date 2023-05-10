@@ -134,8 +134,7 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
                             padding: "0.5em",
                             textAlign: "center",
                             cursor: "pointer",
-                            width: "50%",
-                            margin: "auto",
+                            margin: "5% auto",
                             backgroundColor: "lightgray",
                         }}
                     >
