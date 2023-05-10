@@ -136,6 +136,7 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
                             cursor: "pointer",
                             margin: "5% auto",
                             backgroundColor: "lightgray",
+                            width: "10em",
                         }}
                     >
                         Reset
