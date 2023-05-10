@@ -26,7 +26,17 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
     const [successCounts, setSuccessCounts] = useState(new Array(numStoppingPoints).fill(0));
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-    const STOPPING_POINTS = Array.from({ length: numStoppingPoints }, (_, i) => i / numStoppingPoints);
+    const stoppingPoints = Array.from({ length: numStoppingPoints }, (_, i) => i / numStoppingPoints);
+    const chartDataCommonProperties = {
+        labels: stoppingPoints.map(e => e.toFixed(3)),
+        datasets: [
+            {
+                label: "Success Ratios",
+                barPercentage: 1.0,
+                categoryPercentage: 1.0,
+            },
+        ],
+    };
 
     const wasBestCandidateChosen = (candidates, stopFraction) => {
         const stopIndex = Math.floor(numCandidates * stopFraction);
@@ -48,6 +58,7 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
     useEffect(() => {
         // We're using this effect to force a re-render of the chart when the window is resized
         // Previously, the chart would shrink properly but would not expand when the window was made larger
+        // Note that this might be later refactored to simply store a changed boolean state variable instead of the actual window width since it's not actually used
         const handleWindowResize = () => {
             setWindowWidth(window.innerWidth);
         };
@@ -66,7 +77,7 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
                 const candidates = Array.from({ length: numCandidates }, () => Math.random());
                 const newSuccessCounts = [...successCounts];
 
-                STOPPING_POINTS.forEach((stopRatio, index) => {
+                stoppingPoints.forEach((stopRatio, index) => {
                     if (wasBestCandidateChosen(candidates, stopRatio)) {
                         newSuccessCounts[index]++;
                     }
@@ -75,14 +86,11 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
                 setSuccessCounts(newSuccessCounts);
 
                 const newChartData = {
-                    labels: STOPPING_POINTS.map(e => e.toFixed(3)),
+                    ...chartDataCommonProperties,
                     datasets: [
                         {
-                            label: "Success Ratios",
+                            ...chartDataCommonProperties.datasets[0],
                             data: newSuccessCounts.map((successCount) => successCount / (simulationCount + 1)),
-                            backgroundColor: [],
-                            barPercentage: 1.0,
-                            categoryPercentage: 1.0,
                         },
                     ],
                 };
