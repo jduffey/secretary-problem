@@ -125,6 +125,7 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
                 </Col>
                 <Col>
                     <div
+                        role="button"
                         onClick={() => resetSimulation()}
                         style={{
                             border: "1px solid black",
