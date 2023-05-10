@@ -124,15 +124,30 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
                     />
                 </Col>
                 <Col>
-                    <button onClick={() => resetSimulation()}>
+                    <div
+                        role="button"
+                        onClick={() => resetSimulation()}
+                        style={{
+                            border: "1px solid black",
+                            borderRadius: "0.5em",
+                            fontSize: "1em",
+                            fontWeight: "bold",
+                            padding: "0.5em",
+                            textAlign: "center",
+                            cursor: "pointer",
+                            margin: "5% auto",
+                            backgroundColor: "lightgray",
+                            width: "10em",
+                        }}
+                    >
                         Reset
-                    </button>
+                    </div>
                 </Col>
-            </Row>
-            <Row>
-                <ColorLegend
-                    colorScheme={colorScheme}
-                />
+                <Col>
+                    <ColorLegend
+                        colorScheme={colorScheme}
+                    />
+                </Col>
             </Row>
         </Container >
     );

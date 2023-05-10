@@ -1,5 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Container, Col, Row } from "react-bootstrap";
+import { Container, Row } from "react-bootstrap";
 
 import { Introduction } from "./components/Introduction";
 import { Summary } from "./components/Summary";
@@ -14,12 +14,7 @@ const App = () => {
     return (
         <Container>
             <Row>
-                <Col>
-                    <Introduction />
-                </Col>
-                <Col>
-                    <Summary />
-                </Col>
+                <Introduction />
             </Row>
             <Row>
                 <SimulationManager
@@ -34,6 +29,9 @@ const App = () => {
                     numStoppingPoints={NUM_STOPPING_POINTS}
                     numSimulations={NUM_SIMULATIONS}
                 />
+            </Row>
+            <Row>
+                <Summary />
             </Row>
         </Container >
     );

@@ -2,7 +2,7 @@ export const ColorLegend = ({ colorScheme }) => {
     const decimalPrecision = 1;
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 20 }}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '5% auto' }}>
             {
                 colorScheme.thresholds.map((colorPair) => (
                     <div key={colorPair.threshold} style={{ display: 'flex', alignItems: 'center', marginRight: 10 }}>
