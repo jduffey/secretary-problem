@@ -34,7 +34,7 @@ jobs:
     - name: Checkout "deploy" branch
       run: |
         git fetch
-        git checkout -B deploy origin/deploy || git checkout -b deploy
+        git switch -c deploy || git switch deploy
 
     - name: Set Git author as GitHub Actions and commit
       # note: if there are no changes this will fail because there is nothing to commit
@@ -42,7 +42,7 @@ jobs:
         git config user.name "GitHub Actions"
         git config user.email "github-actions@users.noreply.github.com"
         git add .
-        git commit -m "Update build files [skip ci]"
+        git diff --quiet && git diff --staged --quiet || git commit -m "Update build files [skip ci]"
 
     - name: Push changes
       uses: ad-m/github-push-action@master
