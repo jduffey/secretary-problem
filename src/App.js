@@ -14,12 +14,7 @@ const App = () => {
     return (
         <Container>
             <Row>
-                <Col>
-                    <Introduction />
-                </Col>
-                <Col>
-                    <Summary />
-                </Col>
+                <Introduction />
             </Row>
             <Row>
                 <SimulationManager
@@ -27,6 +22,9 @@ const App = () => {
                     numCandidates={NUM_CANDIDATES}
                     numStoppingPoints={NUM_STOPPING_POINTS}
                 />
+            </Row>
+            <Row>
+                <Summary />
             </Row>
             <Row>
                 <ChartExplanation
