@@ -1,0 +1,54 @@
+name: Merge to main branch and copy build files to deploy branch
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+
+    - uses: actions/checkout@v3
+      with:
+        persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
+        fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - run: npm ci
+
+    - run: npm test
+
+    - run: npm run build
+
+    - name: Checkout "deploy" branch
+      run: |
+        git fetch
+        git checkout -B deploy origin/deploy || git checkout -b deploy
+
+    - name: Set Git author as GitHub Actions and commit
+      # note: if there are no changes this will fail because there is nothing to commit
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "github-actions@users.noreply.github.com"
+        git add .
+        git commit -m "Update build files [skip ci]"
+
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        # reminder for generating a Personal Access Token:
+        # GitHub avatar -> Settings -> Developer settings (bottom of left sidebar)
+        # Then in repo settings -> Secrets and variables -> Actions -> then add the PAT to Repository secrets
+        github_token: ${{ secrets.GH_PAT }}
+        branch: deploy
