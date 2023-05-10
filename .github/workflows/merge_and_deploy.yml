@@ -31,6 +31,9 @@ jobs:
 
     - run: npm run build
 
+    - name: Retain only build files
+      run: find . -mindepth 1 -maxdepth 1 ! -name 'build' ! -name '.git' ! -name '.gitignore' -exec rm -r {} \; && cp -R build/* . && rm -r build
+
     - name: Checkout "deploy" branch
       run: |
         git fetch
