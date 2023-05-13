@@ -8,7 +8,7 @@ import { SimulationManager } from "./components/SimulationManager";
 
 const NUM_CANDIDATES = 1000;
 const NUM_STOPPING_POINTS = NUM_CANDIDATES;
-const NUM_SIMULATIONS = 100_000;
+const NUM_SIMULATIONS = 10;
 
 const App = () => {
     return (

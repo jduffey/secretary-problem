@@ -22,7 +22,7 @@ const colorScheme = {
 };
 
 export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulations }) => {
-    const [chartData, setChartData] = useState({});
+    const [backgroundColorsArray, setBackgroundColorsArray] = useState([]);
     const [simulationCount, setSimulationCount] = useState(0);
     const [successCounts, setSuccessCounts] = useState(new Array(numStoppingPoints).fill(0));
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -31,16 +31,6 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
     const [lastCandidateHash, setLastCandidateHash] = useState(null);
 
     const stoppingPoints = Array.from({ length: numStoppingPoints }, (_, i) => i / numStoppingPoints);
-    const chartDataCommonProperties = {
-        labels: stoppingPoints.map(e => e.toFixed(3)),
-        datasets: [
-            {
-                label: "Success Ratios",
-                barPercentage: 1.0,
-                categoryPercentage: 1.0,
-            },
-        ],
-    };
 
     const wasBestCandidateChosen = (candidates, stopFraction) => {
         const stopIndex = Math.floor(numCandidates * stopFraction);
@@ -118,26 +108,26 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
 
                 setSuccessCounts(newSuccessCounts);
 
-                const newChartData = {
-                    ...chartDataCommonProperties,
-                    datasets: [
-                        {
-                            ...chartDataCommonProperties.datasets[0],
-                            data: newSuccessCounts.map((successCount) => successCount / (simulationCount + 1)),
-                        },
-                    ],
-                };
+                // const newChartDataForBgColorCalculations = {
+                //     datasets: [
+                //         {
+                //             data: newSuccessCounts.map((successCount) => successCount / (simulationCount + 1)),
+                //         },
+                //     ],
+                // };
 
-                const sortedSuccessRatios = [...newChartData.datasets[0].data].sort((a, b) => b - a);
+                const foo = newSuccessCounts.map((successCount) => successCount / (simulationCount + 1));
 
-                newChartData.datasets[0].backgroundColor = newChartData.datasets[0].data.map((successRatio) => {
+                const sortedSuccessRatios = foo.sort((a, b) => b - a);
+
+                const bgColorsArray = foo.map((successRatio) => {
                     const thresholdPair = colorScheme.thresholds.find((pair) => {
                         return successRatio >= sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * pair.threshold)];
                     });
                     return thresholdPair ? thresholdPair.color : colorScheme.defaultColor;
                 });
 
-                setChartData(newChartData);
+                setBackgroundColorsArray(bgColorsArray);
                 setSimulationCount(simulationCount + 1);
             }, msDelayBetweenSimulations);
             return () => clearTimeout(timer);
@@ -154,12 +144,12 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
     return (
         <Container>
             <Row>
-                {chartData.labels && chartData.datasets &&
-                    <SimulationChart
-                        key={windowWidth}
-                        chartData={chartData}
-                    />
-                }
+                <SimulationChart
+                    key={windowWidth}
+                    data={successCounts.map((successCount) => successCount / (simulationCount + 1))}
+                    backgroundColor={backgroundColorsArray}
+                    numStoppingPoints={numStoppingPoints}
+                />
             </Row>
             <Row>
                 <Col>
