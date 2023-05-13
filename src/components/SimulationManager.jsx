@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { useState, useEffect } from "react";
 import { Container, Col, Row } from "react-bootstrap";
 
@@ -41,11 +42,11 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
     const wasBestCandidateChosen = (candidates, stopFraction) => {
         const stopIndex = Math.floor(numCandidates * stopFraction);
 
-        const maxInFirstPhase = Math.max(...candidates.slice(0, stopIndex));
+        const maxInFirstPhase = candidates.slice(0, stopIndex).reduce((max, curr) => curr > max ? curr : max, BigInt(0));
         const remainingCandidates = candidates.slice(stopIndex);
 
         const chosenCandidate = remainingCandidates.find((candidate) => candidate > maxInFirstPhase);
-        const bestCandidate = Math.max(...candidates);
+        const bestCandidate = candidates.reduce((max, curr) => curr > max ? curr : max, BigInt(0));
 
         return chosenCandidate === bestCandidate;
     };
@@ -70,12 +71,27 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
         };
     }, []);
 
+    const generateCandidates = async () => {
+        let hash = new TextEncoder().encode(Date.now().toString());
+        const candidates = [];
+
+        for (let i = 0; i < numCandidates; i++) {
+            hash = await window.crypto.subtle.digest('SHA-256', hash);
+            const hashArray = Array.from(new Uint8Array(hash));
+            const bigIntHash = BigInt('0x' + hashArray.map(b => b.toString(16).padStart(2, '0')).join(''));
+            candidates.push(bigIntHash);
+            hash = new TextEncoder().encode(bigIntHash.toString());
+        }
+
+        return candidates;
+    };
+
     useEffect(() => {
         const msDelayBetweenSimulations = 10;
         if (simulationCount < numSimulations) {
-            const timer = setTimeout(() => {
-                const candidates = Array.from({ length: numCandidates }, () => Math.random());
+            const timer = setTimeout(async () => {
                 const newSuccessCounts = [...successCounts];
+                const candidates = await generateCandidates();
 
                 stoppingPoints.forEach((stopRatio, index) => {
                     if (wasBestCandidateChosen(candidates, stopRatio)) {
