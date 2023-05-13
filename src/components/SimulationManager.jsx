@@ -27,9 +27,6 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
     const [successCounts, setSuccessCounts] = useState(new Array(numStoppingPoints).fill(0));
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-    const [initialSeedHash, setInitialSeedHash] = useState('');
-    const [lastCandidateHash, setLastCandidateHash] = useState(null);
-
     const stoppingPoints = Array.from({ length: numStoppingPoints }, (_, i) => i / numStoppingPoints);
     const chartDataCommonProperties = {
         labels: stoppingPoints.map(e => e.toFixed(3)),
@@ -57,8 +54,6 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
     const resetSimulation = () => {
         setSimulationCount(0);
         setSuccessCounts(new Array(numStoppingPoints).fill(0));
-        setInitialSeedHash('');
-        setLastCandidateHash(null);
     };
 
     useEffect(() => {
@@ -77,19 +72,7 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
     }, []);
 
     const generateCandidates = async () => {
-        let hash;
-        if (lastCandidateHash === null) {
-            hash = new TextEncoder().encode(Date.now().toString());
-            // generate the initial digest and convert to hexadecimal
-            const initialDigest = await window.crypto.subtle.digest('SHA-256', hash);
-            const initialSeedHashHex = Array.from(new Uint8Array(initialDigest)).map(b => b.toString(16).padStart(2, '0')).join('');
-            setInitialSeedHash(initialSeedHashHex);
-            // continue with the initial hash for the first candidate generation
-            hash = initialDigest;
-        } else {
-            hash = lastCandidateHash;
-        }
-
+        let hash = new TextEncoder().encode(Date.now().toString());
         const candidates = [];
         for (let i = 0; i < numCandidates; i++) {
             hash = await window.crypto.subtle.digest('SHA-256', hash);
@@ -98,8 +81,6 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
             candidates.push(bigIntHash);
             hash = new TextEncoder().encode(bigIntHash.toString());
         }
-
-        setLastCandidateHash(hash);
         return candidates;
     };
 
@@ -143,13 +124,6 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
             return () => clearTimeout(timer);
         }
     });
-
-    const InitialSeedHashDisplay = () => (
-        <div>
-            <h2>Initial Seed Hash</h2>
-            <p>{initialSeedHash}</p>
-        </div>
-    );
 
     return (
         <Container>
@@ -195,9 +169,6 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
                         colorScheme={colorScheme}
                     />
                 </Col>
-            </Row>
-            <Row>
-                <InitialSeedHashDisplay />
             </Row>
         </Container >
     );
