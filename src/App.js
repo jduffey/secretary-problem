@@ -5,6 +5,7 @@ import { Introduction } from "./components/Introduction";
 import { Summary } from "./components/Summary";
 import { ChartExplanation } from "./components/ChartExplanation";
 import { SimulationManager } from "./components/SimulationManager";
+import { Footer } from "./components/Footer";
 
 const NUM_CANDIDATES = 1000;
 const NUM_STOPPING_POINTS = NUM_CANDIDATES;
@@ -32,6 +33,9 @@ const App = () => {
             </Row>
             <Row>
                 <Summary />
+            </Row>
+            <Row>
+                <Footer />
             </Row>
         </Container >
     );
