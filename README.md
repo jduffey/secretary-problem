@@ -1,3 +1,4 @@
+[![Build/Deploy](https://github.com/jduffey/secretary-problem/actions/workflows/merge_and_deploy.yml/badge.svg?branch=main)](https://github.com/jduffey/secretary-problem/actions/workflows/merge_and_deploy.yml)
 [![DeepSource](https://app.deepsource.com/gh/jduffey/secretary-problem.svg/?label=active+issues&show_trend=true&token=1mHrnV1gbC7OeUbBaGG4kZxW)](https://app.deepsource.com/gh/jduffey/secretary-problem/?ref=repository-badge)
 
 # Secretary Problem Simulator
