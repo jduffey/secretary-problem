@@ -22,6 +22,7 @@ const colorScheme = {
 };
 
 export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulations }) => {
+    console.log("SimulationManager rendered");
     const [chartData, setChartData] = useState({});
     const [simulationCount, setSimulationCount] = useState(0);
     const [successCounts, setSuccessCounts] = useState(new Array(numStoppingPoints).fill(0));
@@ -39,7 +40,7 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
         ],
     };
 
-    const wasBestCandidateChosen = (candidates, stopFraction) => {
+    const wasBestCandidateChosen = (candidates, numCandidates, stopFraction) => {
         const stopIndex = Math.floor(numCandidates * stopFraction);
 
         const maxInFirstPhase = candidates.slice(0, stopIndex).reduce((max, curr) => curr > max ? curr : max, BigInt(0));
@@ -49,6 +50,20 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
         const bestCandidate = candidates.reduce((max, curr) => curr > max ? curr : max, BigInt(0));
 
         return chosenCandidate === bestCandidate;
+    };
+
+    const generateCandidates = async (numCandidates) => {
+        let hash = new TextEncoder().encode(Date.now().toString());
+        const candidates = [];
+        for (let i = 0; i < numCandidates; i++) {
+            hash = await window.crypto.subtle.digest('SHA-256', hash);
+            const hashArray = Array.from(new Uint8Array(hash));
+            const hexValue = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            const bigIntHash = BigInt(`0x${hexValue}`);
+            candidates.push(bigIntHash);
+            hash = new TextEncoder().encode(bigIntHash.toString());
+        }
+        return candidates;
     };
 
     const resetSimulation = () => {
@@ -71,29 +86,15 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
         };
     }, []);
 
-    const generateCandidates = async () => {
-        let hash = new TextEncoder().encode(Date.now().toString());
-        const candidates = [];
-        for (let i = 0; i < numCandidates; i++) {
-            hash = await window.crypto.subtle.digest('SHA-256', hash);
-            const hashArray = Array.from(new Uint8Array(hash));
-            const hexValue = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            const bigIntHash = BigInt(`0x${hexValue}`);
-            candidates.push(bigIntHash);
-            hash = new TextEncoder().encode(bigIntHash.toString());
-        }
-        return candidates;
-    };
-
     useEffect(() => {
         const msDelayBetweenSimulations = 10;
         if (simulationCount < numSimulations) {
             const timer = setTimeout(async () => {
                 const newSuccessCounts = [...successCounts];
-                const candidates = await generateCandidates();
+                const candidates = await generateCandidates(numCandidates);
 
                 stoppingPoints.forEach((stopRatio, index) => {
-                    if (wasBestCandidateChosen(candidates, stopRatio)) {
+                    if (wasBestCandidateChosen(candidates, numCandidates, stopRatio)) {
                         newSuccessCounts[index]++;
                     }
                 });
