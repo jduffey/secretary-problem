@@ -53,7 +53,8 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
     };
 
     const generateCandidates = async (numCandidates) => {
-        let hash = new TextEncoder().encode(Date.now().toString());
+        const initialInput = `${Math.random()}${Date.now()}`;
+        let hash = new TextEncoder().encode(initialInput);
         const candidates = [];
         for (let i = 0; i < numCandidates; i++) {
             hash = await window.crypto.subtle.digest('SHA-256', hash);
