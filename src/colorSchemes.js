@@ -1,21 +1,14 @@
 const colorSchemes = {
-    // TODO: Decide which color schemes to include
-    // "Standard Colors": {
-    //     thresholds: {
-    //         0.01: "#000000",
-    //         0.05: "#FF00FF",
-    //         0.10: "#FFFF00",
-    //         0.20: "#FF8800",
-    //         0.30: "#D00000",
-    //         0.40: "#00FF00",
-    //         0.50: "#00BB00",
-    //         0.60: "#007700",
-    //         0.70: "#00FFFF",
-    //         0.80: "#00BFFF",
-    //         0.90: "#4444FF",
-    //     },
-    //     defaultColor: "#CCCCCC",
-    // },
+    "Rainbo": {
+        thresholds: {
+            0.01: "#E93E3A",
+            0.20: "#FF7D00",
+            0.40: "#FFFF00",
+            0.60: "#00BB00",
+            0.80: "#00A0FF",
+        },
+        defaultColor: "#4444FF",
+    },
     "Sunspot": {
         thresholds: {
             0.01: "#000000",

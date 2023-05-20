@@ -1,5 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Col, Container, Row } from "react-bootstrap";
+import { useState } from "react";
+import { Col, Container, Row, Button } from "react-bootstrap";
 
 import { Introduction } from "./components/Introduction";
 import { Summary } from "./components/Summary";
@@ -12,19 +13,24 @@ import colorSchemes from "./colorSchemes";
 
 const NUM_SIMULATIONS = 100_000;
 
-const COLOR_SCHEME_NAME = {
-    0: "Sunspot",
-    1: "HAL 9000",
-}[0];
-const colorScheme = {
-    colorThresholds:
-        Object.entries(colorSchemes[COLOR_SCHEME_NAME].thresholds)
-            .sort((a, b) => a.threshold - b.threshold)
-            .map(([threshold, color]) => ({ threshold: parseFloat(threshold), color })),
-    defaultColor: colorSchemes[COLOR_SCHEME_NAME].defaultColor,
-};
+const COLOR_SCHEME_NAMES = ["Sunspot", "HAL 9000", "Rainbo"];
 
 const App = () => {
+    const [colorSchemeName, setColorSchemeName] = useState(COLOR_SCHEME_NAMES[2]);
+
+    const colorScheme = {
+        colorThresholds:
+            Object.entries(colorSchemes[colorSchemeName].thresholds)
+                .sort((a, b) => a.threshold - b.threshold)
+                .map(([threshold, color]) => ({ threshold: parseFloat(threshold), color })),
+        defaultColor: colorSchemes[colorSchemeName].defaultColor,
+    };
+
+    const changeColorScheme = () => {
+        const nextColorSchemeIndex = (COLOR_SCHEME_NAMES.indexOf(colorSchemeName) + 1) % COLOR_SCHEME_NAMES.length;
+        setColorSchemeName(COLOR_SCHEME_NAMES[nextColorSchemeIndex]);
+    };
+
     return (
         <Container>
             <Row>
@@ -34,6 +40,10 @@ const App = () => {
                 <ColorLegend
                     colorScheme={colorScheme}
                 />
+                <Button
+                    onClick={changeColorScheme}>
+                    Change Color Scheme
+                </Button>
             </Row>
             <Row>
                 <Col>
@@ -72,7 +82,7 @@ const App = () => {
             <Row>
                 <Footer />
             </Row>
-        </Container >
+        </Container>
     );
 };
 
