@@ -13,10 +13,9 @@ import colorSchemes from "./colorSchemes";
 const NUM_SIMULATIONS = 100_000;
 
 const COLOR_SCHEME_NAME = {
-    0: "Standard Colors",
+    0: "Sunspot",
     1: "HAL 9000",
-    2: "Sunspot",
-}[2];
+}[0];
 const colorScheme = {
     colorThresholds:
         Object.entries(colorSchemes[COLOR_SCHEME_NAME].thresholds)
