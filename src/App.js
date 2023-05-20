@@ -19,22 +19,18 @@ const App = () => {
                 <SimulationManager
                     numSimulations={NUM_SIMULATIONS}
                     numCandidates={1000}
-                    numStoppingPoints={1000}
                 />
                 <SimulationManager
                     numSimulations={NUM_SIMULATIONS}
                     numCandidates={100}
-                    numStoppingPoints={100}
                 />
                 <SimulationManager
                     numSimulations={NUM_SIMULATIONS}
                     numCandidates={50}
-                    numStoppingPoints={50}
                 />
                 <SimulationManager
                     numSimulations={NUM_SIMULATIONS}
                     numCandidates={20}
-                    numStoppingPoints={20}
                 />
             </Row>
             <Row>
