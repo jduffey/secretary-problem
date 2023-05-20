@@ -21,13 +21,13 @@ const colorScheme = {
     defaultColor: colorSchemes[COLOR_SCHEME_NAME].defaultColor,
 };
 
-export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulations }) => {
+export const SimulationManager = ({ numCandidates, numSimulations }) => {
     const [chartData, setChartData] = useState({});
     const [simulationCount, setSimulationCount] = useState(0);
-    const [successCounts, setSuccessCounts] = useState(new Array(numStoppingPoints).fill(0));
+    const [successCounts, setSuccessCounts] = useState(new Array(numCandidates).fill(0));
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-    const stoppingPoints = Array.from({ length: numStoppingPoints }, (_, i) => i / numStoppingPoints);
+    const stoppingPoints = Array.from({ length: numCandidates }, (_, i) => i / numCandidates);
     const chartDataCommonProperties = {
         labels: stoppingPoints.map(e => e.toFixed(3)),
         datasets: [
@@ -68,7 +68,7 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
 
     const resetSimulation = () => {
         setSimulationCount(0);
-        setSuccessCounts(new Array(numStoppingPoints).fill(0));
+        setSuccessCounts(new Array(numCandidates).fill(0));
     };
 
     useEffect(() => {
@@ -143,7 +143,6 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
                         simulationCount={simulationCount}
                         numSimulations={numSimulations}
                         numCandidates={numCandidates}
-                        numStoppingPoints={numStoppingPoints}
                     />
                 </Col>
                 <Col>
