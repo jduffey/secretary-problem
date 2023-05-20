@@ -33,7 +33,7 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
         labels: stoppingPoints.map(e => e.toFixed(3)),
         datasets: [
             {
-                label: "Success Ratios",
+                label: `Success ratios with ${numCandidates.toLocaleString()} Candidates`,
                 barPercentage: 1.0,
                 categoryPercentage: 1.0,
             },
