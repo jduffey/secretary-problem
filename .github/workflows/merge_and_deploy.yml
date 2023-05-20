@@ -1,4 +1,4 @@
-name: Build and copy output to deploy branch
+name: Build and send to deploy branch
 
 on:
   push:
