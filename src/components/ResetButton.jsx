@@ -4,15 +4,15 @@ export const ResetButton = ({ myFunction }) => (
         onClick={() => myFunction()}
         style={{
             border: "1px solid black",
-            borderRadius: "0.5em",
+            borderRadius: "0.25em",
             fontSize: "1em",
             fontWeight: "bold",
-            padding: "0.5em",
+            padding: "0.2em",
             textAlign: "center",
             cursor: "pointer",
-            margin: "5% auto",
+            margin: "auto",
             backgroundColor: "lightgray",
-            width: "10em",
+            width: "8em",
         }}
     >
         Reset
