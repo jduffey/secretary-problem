@@ -1,12 +1,13 @@
-export const ChartExplanation = ({ numCandidates, numStoppingPoints, numSimulations }) => {
+export const ChartExplanation = ({ numSimulations }) => {
     return (
         <div>
-            <h4 style={{ textAlign: "center" }}>The chart represents the continuously-updated average success ratios on a series of {numSimulations.toLocaleString()} simulations.</h4>
+            <h4 style={{ textAlign: "center" }}>The charts represent the continuously-updated success ratios on a series of {numSimulations.toLocaleString()} simulations with various sizes of candidate groups.</h4>
+            <br />
             <ul>
-                <li>On each iteration of the simulation, a new array of {numCandidates.toLocaleString()} candidates is created with each candidate assigned a random value representing their quality.</li>
+                <li>On each iteration of the simulation, a new array of candidates is created with each candidate assigned a random value representing their quality.</li>
                 <li>For each group of candidates (each simulation of the interview process), the following occurs:</li>
                 <ul>
-                    <li>For each potential stopping point ratio (i.e. 0 up to and excluding 1, in increments of {(1 / numStoppingPoints).toLocaleString()}):</li>
+                    <li>For each potential stopping point ratio (i.e. 0 up to and excluding 1, in evenly-spaced increments inversely proportional to the number of candidates being interviewed:</li>
                     <ul>
                         <li>The first group of candidates is assessed one-by-one and the value of the best candidate is recorded.</li>
                         <li>The interview process continues with the second group until a candidate is found with a higher rating than the best candidate from the first group.</li>

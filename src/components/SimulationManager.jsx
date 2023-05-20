@@ -1,10 +1,12 @@
-/* eslint-disable no-undef */
 import { useState, useEffect } from "react";
 import { Container, Col, Row } from "react-bootstrap";
 
 import { SimulationChart } from "./SimulationChart";
 import { SimulationStats } from "./SimulationStats";
 import { ColorLegend } from "./ColorLegend";
+
+import { generateCandidates } from "../utils/generateCandidates";
+import { wasBestCandidateChosen } from "../utils/wasBestCandidateChosen";
 
 import colorSchemes from "../colorSchemes";
 
@@ -21,39 +23,27 @@ const colorScheme = {
     defaultColor: colorSchemes[COLOR_SCHEME_NAME].defaultColor,
 };
 
-export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulations }) => {
+export const SimulationManager = ({ numCandidates, numSimulations }) => {
     const [chartData, setChartData] = useState({});
     const [simulationCount, setSimulationCount] = useState(0);
-    const [successCounts, setSuccessCounts] = useState(new Array(numStoppingPoints).fill(0));
+    const [successCounts, setSuccessCounts] = useState(new Array(numCandidates).fill(0));
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-    const stoppingPoints = Array.from({ length: numStoppingPoints }, (_, i) => i / numStoppingPoints);
+    const stoppingPoints = Array.from({ length: numCandidates }, (_, i) => i / numCandidates);
     const chartDataCommonProperties = {
         labels: stoppingPoints.map(e => e.toFixed(3)),
         datasets: [
             {
-                label: "Success Ratios",
+                label: `Success ratios with ${numCandidates.toLocaleString()} Candidates`,
                 barPercentage: 1.0,
                 categoryPercentage: 1.0,
             },
         ],
     };
 
-    const wasBestCandidateChosen = (candidates, stopFraction) => {
-        const stopIndex = Math.floor(numCandidates * stopFraction);
-
-        const maxInFirstPhase = candidates.slice(0, stopIndex).reduce((max, curr) => curr > max ? curr : max, BigInt(0));
-        const remainingCandidates = candidates.slice(stopIndex);
-
-        const chosenCandidate = remainingCandidates.find((candidate) => candidate > maxInFirstPhase);
-        const bestCandidate = candidates.reduce((max, curr) => curr > max ? curr : max, BigInt(0));
-
-        return chosenCandidate === bestCandidate;
-    };
-
     const resetSimulation = () => {
         setSimulationCount(0);
-        setSuccessCounts(new Array(numStoppingPoints).fill(0));
+        setSuccessCounts(new Array(numCandidates).fill(0));
     };
 
     useEffect(() => {
@@ -71,29 +61,15 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
         };
     }, []);
 
-    const generateCandidates = async () => {
-        let hash = new TextEncoder().encode(Date.now().toString());
-        const candidates = [];
-        for (let i = 0; i < numCandidates; i++) {
-            hash = await window.crypto.subtle.digest('SHA-256', hash);
-            const hashArray = Array.from(new Uint8Array(hash));
-            const hexValue = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            const bigIntHash = BigInt(`0x${hexValue}`);
-            candidates.push(bigIntHash);
-            hash = new TextEncoder().encode(bigIntHash.toString());
-        }
-        return candidates;
-    };
-
     useEffect(() => {
         const msDelayBetweenSimulations = 10;
         if (simulationCount < numSimulations) {
             const timer = setTimeout(async () => {
                 const newSuccessCounts = [...successCounts];
-                const candidates = await generateCandidates();
+                const candidates = await generateCandidates(numCandidates);
 
                 stoppingPoints.forEach((stopRatio, index) => {
-                    if (wasBestCandidateChosen(candidates, stopRatio)) {
+                    if (wasBestCandidateChosen(candidates, numCandidates, stopRatio)) {
                         newSuccessCounts[index]++;
                     }
                 });
@@ -142,7 +118,6 @@ export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulat
                         simulationCount={simulationCount}
                         numSimulations={numSimulations}
                         numCandidates={numCandidates}
-                        numStoppingPoints={numStoppingPoints}
                     />
                 </Col>
                 <Col>

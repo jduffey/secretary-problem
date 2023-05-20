@@ -7,8 +7,6 @@ import { ChartExplanation } from "./components/ChartExplanation";
 import { SimulationManager } from "./components/SimulationManager";
 import { Footer } from "./components/Footer";
 
-const NUM_CANDIDATES = 1000;
-const NUM_STOPPING_POINTS = NUM_CANDIDATES;
 const NUM_SIMULATIONS = 100_000;
 
 const App = () => {
@@ -20,14 +18,23 @@ const App = () => {
             <Row>
                 <SimulationManager
                     numSimulations={NUM_SIMULATIONS}
-                    numCandidates={NUM_CANDIDATES}
-                    numStoppingPoints={NUM_STOPPING_POINTS}
+                    numCandidates={1000}
+                />
+                <SimulationManager
+                    numSimulations={NUM_SIMULATIONS}
+                    numCandidates={100}
+                />
+                <SimulationManager
+                    numSimulations={NUM_SIMULATIONS}
+                    numCandidates={50}
+                />
+                <SimulationManager
+                    numSimulations={NUM_SIMULATIONS}
+                    numCandidates={20}
                 />
             </Row>
             <Row>
                 <ChartExplanation
-                    numCandidates={NUM_CANDIDATES}
-                    numStoppingPoints={NUM_STOPPING_POINTS}
                     numSimulations={NUM_SIMULATIONS}
                 />
             </Row>
