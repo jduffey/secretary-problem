@@ -22,7 +22,6 @@ const colorScheme = {
 };
 
 export const SimulationManager = ({ numCandidates, numStoppingPoints, numSimulations }) => {
-    console.log("SimulationManager rendered");
     const [chartData, setChartData] = useState({});
     const [simulationCount, setSimulationCount] = useState(0);
     const [successCounts, setSuccessCounts] = useState(new Array(numStoppingPoints).fill(0));
