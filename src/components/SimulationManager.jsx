@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Container, Col, Row } from "react-bootstrap";
 
+import { ResetButton } from "./ResetButton";
 import { SimulationChart } from "./SimulationChart";
 import { SimulationStats } from "./SimulationStats";
 import { ColorLegend } from "./ColorLegend";
@@ -16,7 +17,7 @@ const COLOR_SCHEME_NAME = {
     2: "Sunspot",
 }[2];
 const colorScheme = {
-    thresholds:
+    colorThresholds:
         Object.entries(colorSchemes[COLOR_SCHEME_NAME].thresholds)
             .sort((a, b) => a.threshold - b.threshold)
             .map(([threshold, color]) => ({ threshold: parseFloat(threshold), color })),
@@ -24,93 +25,80 @@ const colorScheme = {
 };
 
 export const SimulationManager = ({ numCandidates, numSimulations }) => {
-    const [chartData, setChartData] = useState({});
+    const [isResetting, setIsResetting] = useState(false);
     const [simulationCount, setSimulationCount] = useState(0);
     const [successCounts, setSuccessCounts] = useState(new Array(numCandidates).fill(0));
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    const [barColors, setBarColors] = useState(new Array(numCandidates).fill(colorScheme.defaultColor));
 
-    const stoppingPoints = Array.from({ length: numCandidates }, (_, i) => i / numCandidates);
-    const chartDataCommonProperties = {
-        labels: stoppingPoints.map(e => e.toFixed(3)),
-        datasets: [
-            {
-                label: `Success ratios with ${numCandidates.toLocaleString()} Candidates`,
-                barPercentage: 1.0,
-                categoryPercentage: 1.0,
-            },
-        ],
-    };
+    const stoppingPoints = useMemo(() => {
+        return Array.from({ length: numCandidates }, (_, i) => i / numCandidates);
+    }, [numCandidates]);
 
     const resetSimulation = () => {
-        setSimulationCount(0);
-        setSuccessCounts(new Array(numCandidates).fill(0));
+        setIsResetting(true);
+        setTimeout(() => {
+            setSimulationCount(0);
+            setSuccessCounts(new Array(numCandidates).fill(0));
+            setBarColors(new Array(numCandidates).fill(colorScheme.defaultColor));
+            setIsResetting(false);
+        }, 100); // 100 ms delay to prevent state update conflicts with the simulation
     };
 
     useEffect(() => {
         // We're using this effect to force a re-render of the chart when the window is resized
         // Previously, the chart would shrink properly but would not expand when the window was made larger
         // Note that this might be later refactored to simply store a changed boolean state variable instead of the actual window width since it's not actually used
-        const handleWindowResize = () => {
-            setWindowWidth(window.innerWidth);
-        };
-
+        const handleWindowResize = () => { setWindowWidth(window.innerWidth); };
         window.addEventListener('resize', handleWindowResize);
-
-        return () => {
-            window.removeEventListener('resize', handleWindowResize);
-        };
+        return () => { window.removeEventListener('resize', handleWindowResize); };
     }, []);
 
     useEffect(() => {
-        const msDelayBetweenSimulations = 10;
-        if (simulationCount < numSimulations) {
+        if (!isResetting && simulationCount < numSimulations) {
+            const msDelayBetweenSimulations = 10;
             const timer = setTimeout(async () => {
-                const newSuccessCounts = [...successCounts];
                 const candidates = await generateCandidates(numCandidates);
 
-                stoppingPoints.forEach((stopRatio, index) => {
-                    if (wasBestCandidateChosen(candidates, numCandidates, stopRatio)) {
-                        newSuccessCounts[index]++;
-                    }
+                const newSuccessCounts = stoppingPoints.map((stopRatio, index) => {
+                    return wasBestCandidateChosen(candidates, numCandidates, stopRatio)
+                        ? successCounts[index] + 1
+                        : successCounts[index];
+                });
+
+                const incrementedSimulationCount = simulationCount + 1;
+
+                const newSuccessRatios = newSuccessCounts.map((successCount) => successCount / incrementedSimulationCount);
+
+                const sortedSuccessRatios = [...newSuccessRatios].sort((a, b) => b - a);
+
+                const newBarColors = newSuccessRatios.map((successRatio) => {
+                    const colorThresholdPair = colorScheme.colorThresholds.find(({ threshold }) => {
+                        return successRatio >= sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * threshold)];
+                    });
+                    return colorThresholdPair
+                        ? colorThresholdPair.color
+                        : colorScheme.defaultColor;
                 });
 
                 setSuccessCounts(newSuccessCounts);
-
-                const newChartData = {
-                    ...chartDataCommonProperties,
-                    datasets: [
-                        {
-                            ...chartDataCommonProperties.datasets[0],
-                            data: newSuccessCounts.map((successCount) => successCount / (simulationCount + 1)),
-                        },
-                    ],
-                };
-
-                const sortedSuccessRatios = [...newChartData.datasets[0].data].sort((a, b) => b - a);
-
-                newChartData.datasets[0].backgroundColor = newChartData.datasets[0].data.map((successRatio) => {
-                    const thresholdPair = colorScheme.thresholds.find((pair) => {
-                        return successRatio >= sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * pair.threshold)];
-                    });
-                    return thresholdPair ? thresholdPair.color : colorScheme.defaultColor;
-                });
-
-                setChartData(newChartData);
-                setSimulationCount(simulationCount + 1);
+                setBarColors(newBarColors);
+                setSimulationCount(incrementedSimulationCount);
             }, msDelayBetweenSimulations);
             return () => clearTimeout(timer);
         }
-    });
+    }, [simulationCount, numSimulations, successCounts, numCandidates, stoppingPoints, isResetting]);
 
     return (
         <Container>
             <Row>
-                {chartData.labels && chartData.datasets &&
-                    <SimulationChart
-                        key={windowWidth}
-                        chartData={chartData}
-                    />
-                }
+                <SimulationChart
+                    key={windowWidth}
+                    numCandidates={numCandidates}
+                    successCounts={successCounts}
+                    simulationCount={simulationCount}
+                    backgroundColor={barColors}
+                />
             </Row>
             <Row>
                 <Col>
@@ -121,24 +109,9 @@ export const SimulationManager = ({ numCandidates, numSimulations }) => {
                     />
                 </Col>
                 <Col>
-                    <div
-                        role="button"
-                        onClick={() => resetSimulation()}
-                        style={{
-                            border: "1px solid black",
-                            borderRadius: "0.5em",
-                            fontSize: "1em",
-                            fontWeight: "bold",
-                            padding: "0.5em",
-                            textAlign: "center",
-                            cursor: "pointer",
-                            margin: "5% auto",
-                            backgroundColor: "lightgray",
-                            width: "10em",
-                        }}
-                    >
-                        Reset
-                    </div>
+                    <ResetButton
+                        myFunction={resetSimulation}
+                    />
                 </Col>
                 <Col>
                     <ColorLegend
