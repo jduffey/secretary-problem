@@ -17,7 +17,7 @@ const COLOR_SCHEME_NAME = {
     2: "Sunspot",
 }[2];
 const colorScheme = {
-    thresholds:
+    colorThresholds:
         Object.entries(colorSchemes[COLOR_SCHEME_NAME].thresholds)
             .sort((a, b) => a.threshold - b.threshold)
             .map(([threshold, color]) => ({ threshold: parseFloat(threshold), color })),
@@ -55,34 +55,35 @@ export const SimulationManager = ({ numCandidates, numSimulations }) => {
     }, []);
 
     useEffect(() => {
-        const msDelayBetweenSimulations = 10;
         if (!isResetting && simulationCount < numSimulations) {
+            const msDelayBetweenSimulations = 10;
             const timer = setTimeout(async () => {
-                const newSuccessCounts = [...successCounts];
                 const candidates = await generateCandidates(numCandidates);
 
-                stoppingPoints.forEach((stopRatio, index) => {
-                    if (wasBestCandidateChosen(candidates, numCandidates, stopRatio)) {
-                        newSuccessCounts[index]++;
-                    }
+                const newSuccessCounts = stoppingPoints.map((stopRatio, index) => {
+                    return wasBestCandidateChosen(candidates, numCandidates, stopRatio)
+                        ? successCounts[index] + 1
+                        : successCounts[index];
                 });
 
-                setSuccessCounts(newSuccessCounts);
+                const incrementedSimulationCount = simulationCount + 1;
 
-                const newSuccessRatios = newSuccessCounts.map((successCount) => successCount / (simulationCount + 1));
+                const newSuccessRatios = newSuccessCounts.map((successCount) => successCount / incrementedSimulationCount);
 
                 const sortedSuccessRatios = [...newSuccessRatios].sort((a, b) => b - a);
 
-                const newColors = newSuccessRatios.map((successRatio) => {
-                    const thresholdPair = colorScheme.thresholds.find((pair) => {
-                        return successRatio >= sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * pair.threshold)];
+                const newBarColors = newSuccessRatios.map((successRatio) => {
+                    const colorThresholdPair = colorScheme.colorThresholds.find(({ threshold }) => {
+                        return successRatio >= sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * threshold)];
                     });
-                    return thresholdPair ? thresholdPair.color : colorScheme.defaultColor;
+                    return colorThresholdPair
+                        ? colorThresholdPair.color
+                        : colorScheme.defaultColor;
                 });
 
-                setBarColors(newColors);
-
-                setSimulationCount(simulationCount + 1);
+                setSuccessCounts(newSuccessCounts);
+                setBarColors(newBarColors);
+                setSimulationCount(incrementedSimulationCount);
             }, msDelayBetweenSimulations);
             return () => clearTimeout(timer);
         }
