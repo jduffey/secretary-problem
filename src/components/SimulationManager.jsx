@@ -25,22 +25,12 @@ const colorScheme = {
 };
 
 export const SimulationManager = ({ numCandidates, numSimulations }) => {
-    const [chartData, setChartData] = useState({});
     const [simulationCount, setSimulationCount] = useState(0);
     const [successCounts, setSuccessCounts] = useState(new Array(numCandidates).fill(0));
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    const [barColors, setBarColors] = useState(new Array(numCandidates).fill(colorScheme.defaultColor));
 
     const stoppingPoints = Array.from({ length: numCandidates }, (_, i) => i / numCandidates);
-    const chartDataCommonProperties = {
-        labels: stoppingPoints.map(e => e.toFixed(3)),
-        datasets: [
-            {
-                label: `Success ratios with ${numCandidates.toLocaleString()} Candidates`,
-                barPercentage: 1.0,
-                categoryPercentage: 1.0,
-            },
-        ],
-    };
 
     const resetSimulation = () => {
         setSimulationCount(0);
@@ -63,10 +53,9 @@ export const SimulationManager = ({ numCandidates, numSimulations }) => {
     }, []);
 
     useEffect(() => {
-        let timer;
         const msDelayBetweenSimulations = 10;
         if (simulationCount < numSimulations) {
-            timer = setTimeout(async () => {
+            const timer = setTimeout(async () => {
                 const newSuccessCounts = [...successCounts];
                 const candidates = await generateCandidates(numCandidates);
 
@@ -78,44 +67,35 @@ export const SimulationManager = ({ numCandidates, numSimulations }) => {
 
                 setSuccessCounts(newSuccessCounts);
 
-                const newChartData = {
-                    ...chartDataCommonProperties,
-                    datasets: [
-                        {
-                            ...chartDataCommonProperties.datasets[0],
-                            data: newSuccessCounts.map((successCount) => successCount / (simulationCount + 1)),
-                        },
-                    ],
-                };
+                const newSuccessRatios = newSuccessCounts.map((successCount) => successCount / (simulationCount + 1));
 
-                const sortedSuccessRatios = [...newChartData.datasets[0].data].sort((a, b) => b - a);
+                const sortedSuccessRatios = [...newSuccessRatios].sort((a, b) => b - a);
 
-                newChartData.datasets[0].backgroundColor = newChartData.datasets[0].data.map((successRatio) => {
+                const newColors = newSuccessRatios.map((successRatio) => {
                     const thresholdPair = colorScheme.thresholds.find((pair) => {
                         return successRatio >= sortedSuccessRatios[Math.floor(sortedSuccessRatios.length * pair.threshold)];
                     });
                     return thresholdPair ? thresholdPair.color : colorScheme.defaultColor;
                 });
 
-                setChartData(newChartData);
-                setSimulationCount(prevCount => prevCount + 1);
-            }, msDelayBetweenSimulations);
-        }
+                setBarColors(newColors);
 
-        return () => {
-            if (timer) clearTimeout(timer);
-        };
-    }, [simulationCount, numSimulations, successCounts, numCandidates, chartDataCommonProperties, stoppingPoints]);
+                setSimulationCount(simulationCount + 1);
+            }, msDelayBetweenSimulations);
+            return () => clearTimeout(timer);
+        }
+    }, [simulationCount, numSimulations, successCounts, numCandidates, stoppingPoints]);
 
     return (
         <Container>
             <Row>
-                {chartData.labels && chartData.datasets &&
-                    <SimulationChart
-                        key={windowWidth}
-                        chartData={chartData}
-                    />
-                }
+                <SimulationChart
+                    key={windowWidth}
+                    numCandidates={numCandidates}
+                    successCounts={successCounts}
+                    simulationCount={simulationCount}
+                    backgroundColor={barColors}
+                />
             </Row>
             <Row>
                 <Col>
