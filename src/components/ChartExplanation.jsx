@@ -7,7 +7,7 @@ export const ChartExplanation = ({ numSimulations }) => {
                 <li>On each iteration of the simulation, a new array of candidates is created with each candidate assigned a random value representing their quality.</li>
                 <li>For each group of candidates (each simulation of the interview process), the following occurs:</li>
                 <ul>
-                    <li>For each potential stopping point ratio (i.e. 0 up to and excluding 1, in evenly-spaced increments inversly proportional to the number of candidates being interviewed:</li>
+                    <li>For each potential stopping point ratio (i.e. 0 up to and excluding 1, in evenly-spaced increments inversely proportional to the number of candidates being interviewed:</li>
                     <ul>
                         <li>The first group of candidates is assessed one-by-one and the value of the best candidate is recorded.</li>
                         <li>The interview process continues with the second group until a candidate is found with a higher rating than the best candidate from the first group.</li>
