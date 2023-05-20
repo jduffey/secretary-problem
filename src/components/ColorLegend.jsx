@@ -1,6 +1,28 @@
-export const ColorLegend = ({ colorScheme }) => {
-    const decimalPrecision = 1;
+const decimalPrecision = 1;
 
+const ColorSquareText = ({ color, threshold }) => (
+    <div
+        key={threshold}
+        style={{
+            display: 'flex',
+            alignItems: 'center',
+            marginRight: 10
+        }}
+    >
+        <div style={{
+            width: 20,
+            height: 20,
+            backgroundColor: color,
+            marginRight: 5,
+            border: '1px solid black',
+        }} />
+        <span>
+            {(threshold * 100).toFixed(decimalPrecision)}%
+        </span>
+    </div>
+);
+
+export const ColorLegend = ({ colorScheme }) => {
     return (
         <div style={{
             display: 'flex',
@@ -10,46 +32,18 @@ export const ColorLegend = ({ colorScheme }) => {
         }}>
             {
                 colorScheme.colorThresholds.map(({ color, threshold }) => (
-                    <div
+                    <ColorSquareText
                         key={threshold}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            marginRight: 10
-                        }}
-                    >
-                        <div style={{
-                            width: 20,
-                            height: 20,
-                            backgroundColor: color,
-                            marginRight: 5,
-                            border: '1px solid black',
-                        }} />
-                        <span>
-                            {(threshold * 100).toFixed(decimalPrecision)}%
-                        </span>
-                    </div>
+                        color={color}
+                        threshold={threshold}
+                    />
                 ))
             }
-            <div
+            <ColorSquareText
                 key={"defaultColor"}
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    marginRight: 10
-                }}
-            >
-                <div style={{
-                    width: 20,
-                    height: 20,
-                    backgroundColor: colorScheme.defaultColor,
-                    marginRight: 5,
-                    border: '1px solid black',
-                }} />
-                <span>
-                    {(100).toFixed(decimalPrecision)}%
-                </span>
-            </div>
+                color={colorScheme.defaultColor}
+                threshold={1}
+            />
         </div>
     );
 };
