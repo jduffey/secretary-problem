@@ -8,7 +8,6 @@ import { SimulationManager } from "./components/SimulationManager";
 import { Footer } from "./components/Footer";
 
 const NUM_SIMULATIONS = 100_000;
-// const NUM_SIMULATIONS = 500;
 
 const App = () => {
     return (

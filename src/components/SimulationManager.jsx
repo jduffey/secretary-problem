@@ -25,6 +25,7 @@ const colorScheme = {
 };
 
 export const SimulationManager = ({ numCandidates, numSimulations }) => {
+    const [isResetting, setIsResetting] = useState(false);
     const [simulationCount, setSimulationCount] = useState(0);
     const [successCounts, setSuccessCounts] = useState(new Array(numCandidates).fill(0));
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -33,8 +34,13 @@ export const SimulationManager = ({ numCandidates, numSimulations }) => {
     const stoppingPoints = Array.from({ length: numCandidates }, (_, i) => i / numCandidates);
 
     const resetSimulation = () => {
-        setSimulationCount(0);
-        setSuccessCounts(new Array(numCandidates).fill(0));
+        setIsResetting(true);
+        setTimeout(() => {
+            setSimulationCount(0);
+            setSuccessCounts(new Array(numCandidates).fill(0));
+            setBarColors(new Array(numCandidates).fill(colorScheme.defaultColor));
+            setIsResetting(false);
+        }, 100); // 100 ms delay to prevent state update conflicts with the useEffect hook
     };
 
     useEffect(() => {
@@ -54,7 +60,7 @@ export const SimulationManager = ({ numCandidates, numSimulations }) => {
 
     useEffect(() => {
         const msDelayBetweenSimulations = 10;
-        if (simulationCount < numSimulations) {
+        if (!isResetting && simulationCount < numSimulations) {
             const timer = setTimeout(async () => {
                 const newSuccessCounts = [...successCounts];
                 const candidates = await generateCandidates(numCandidates);
@@ -84,7 +90,7 @@ export const SimulationManager = ({ numCandidates, numSimulations }) => {
             }, msDelayBetweenSimulations);
             return () => clearTimeout(timer);
         }
-    }, [simulationCount, numSimulations, successCounts, numCandidates, stoppingPoints]);
+    }, [simulationCount, numSimulations, successCounts, numCandidates, stoppingPoints, isResetting]);
 
     return (
         <Container>
