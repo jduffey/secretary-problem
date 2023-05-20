@@ -4,27 +4,11 @@ import { Container, Col, Row } from "react-bootstrap";
 import { ResetButton } from "./ResetButton";
 import { SimulationChart } from "./SimulationChart";
 import { SimulationStats } from "./SimulationStats";
-import { ColorLegend } from "./ColorLegend";
 
 import { generateCandidates } from "../utils/generateCandidates";
 import { wasBestCandidateChosen } from "../utils/wasBestCandidateChosen";
 
-import colorSchemes from "../colorSchemes";
-
-const COLOR_SCHEME_NAME = {
-    0: "Standard Colors",
-    1: "HAL 9000",
-    2: "Sunspot",
-}[2];
-const colorScheme = {
-    colorThresholds:
-        Object.entries(colorSchemes[COLOR_SCHEME_NAME].thresholds)
-            .sort((a, b) => a.threshold - b.threshold)
-            .map(([threshold, color]) => ({ threshold: parseFloat(threshold), color })),
-    defaultColor: colorSchemes[COLOR_SCHEME_NAME].defaultColor,
-};
-
-export const SimulationManager = ({ numCandidates, numSimulations }) => {
+export const SimulationManager = ({ numCandidates, numSimulations, colorScheme }) => {
     const [isResetting, setIsResetting] = useState(false);
     const [simulationCount, setSimulationCount] = useState(0);
     const [successCounts, setSuccessCounts] = useState(new Array(numCandidates).fill(0));
@@ -87,7 +71,7 @@ export const SimulationManager = ({ numCandidates, numSimulations }) => {
             }, msDelayBetweenSimulations);
             return () => clearTimeout(timer);
         }
-    }, [simulationCount, numSimulations, successCounts, numCandidates, stoppingPoints, isResetting]);
+    }, [simulationCount, numSimulations, successCounts, numCandidates, stoppingPoints, isResetting, colorScheme]);
 
     return (
         <Container>
@@ -111,11 +95,6 @@ export const SimulationManager = ({ numCandidates, numSimulations }) => {
                 <Col>
                     <ResetButton
                         myFunction={resetSimulation}
-                    />
-                </Col>
-                <Col>
-                    <ColorLegend
-                        colorScheme={colorScheme}
                     />
                 </Col>
             </Row>

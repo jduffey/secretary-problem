@@ -23,7 +23,7 @@ export const SimulationChart = ({ numCandidates, successCounts, simulationCount,
         <Bar
             data={chartData}
             options={{
-                aspectRatio: 3,
+                aspectRatio: 2,
                 scales: {
                     x: {
                         type: "category",
