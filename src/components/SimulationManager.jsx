@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Container, Col, Row } from "react-bootstrap";
 
 import { ResetButton } from "./ResetButton";
@@ -31,7 +31,9 @@ export const SimulationManager = ({ numCandidates, numSimulations }) => {
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [barColors, setBarColors] = useState(new Array(numCandidates).fill(colorScheme.defaultColor));
 
-    const stoppingPoints = Array.from({ length: numCandidates }, (_, i) => i / numCandidates);
+    const stoppingPoints = useMemo(() => {
+        return Array.from({ length: numCandidates }, (_, i) => i / numCandidates);
+    }, [numCandidates]);
 
     const resetSimulation = () => {
         setIsResetting(true);
@@ -40,22 +42,16 @@ export const SimulationManager = ({ numCandidates, numSimulations }) => {
             setSuccessCounts(new Array(numCandidates).fill(0));
             setBarColors(new Array(numCandidates).fill(colorScheme.defaultColor));
             setIsResetting(false);
-        }, 100); // 100 ms delay to prevent state update conflicts with the useEffect hook
+        }, 100); // 100 ms delay to prevent state update conflicts with the simulation
     };
 
     useEffect(() => {
         // We're using this effect to force a re-render of the chart when the window is resized
         // Previously, the chart would shrink properly but would not expand when the window was made larger
         // Note that this might be later refactored to simply store a changed boolean state variable instead of the actual window width since it's not actually used
-        const handleWindowResize = () => {
-            setWindowWidth(window.innerWidth);
-        };
-
+        const handleWindowResize = () => { setWindowWidth(window.innerWidth); };
         window.addEventListener('resize', handleWindowResize);
-
-        return () => {
-            window.removeEventListener('resize', handleWindowResize);
-        };
+        return () => { window.removeEventListener('resize', handleWindowResize); };
     }, []);
 
     useEffect(() => {
