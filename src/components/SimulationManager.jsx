@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Container, Col, Row } from "react-bootstrap";
 
+import { ResetButton } from "./ResetButton";
 import { SimulationChart } from "./SimulationChart";
 import { SimulationStats } from "./SimulationStats";
 import { ColorLegend } from "./ColorLegend";
@@ -62,9 +63,10 @@ export const SimulationManager = ({ numCandidates, numSimulations }) => {
     }, []);
 
     useEffect(() => {
+        let timer;
         const msDelayBetweenSimulations = 10;
         if (simulationCount < numSimulations) {
-            const timer = setTimeout(async () => {
+            timer = setTimeout(async () => {
                 const newSuccessCounts = [...successCounts];
                 const candidates = await generateCandidates(numCandidates);
 
@@ -96,11 +98,14 @@ export const SimulationManager = ({ numCandidates, numSimulations }) => {
                 });
 
                 setChartData(newChartData);
-                setSimulationCount(simulationCount + 1);
+                setSimulationCount(prevCount => prevCount + 1);
             }, msDelayBetweenSimulations);
-            return () => clearTimeout(timer);
         }
-    });
+
+        return () => {
+            if (timer) clearTimeout(timer);
+        };
+    }, [simulationCount, numSimulations, successCounts, numCandidates, chartDataCommonProperties, stoppingPoints]);
 
     return (
         <Container>
@@ -121,24 +126,9 @@ export const SimulationManager = ({ numCandidates, numSimulations }) => {
                     />
                 </Col>
                 <Col>
-                    <div
-                        role="button"
-                        onClick={() => resetSimulation()}
-                        style={{
-                            border: "1px solid black",
-                            borderRadius: "0.5em",
-                            fontSize: "1em",
-                            fontWeight: "bold",
-                            padding: "0.5em",
-                            textAlign: "center",
-                            cursor: "pointer",
-                            margin: "5% auto",
-                            backgroundColor: "lightgray",
-                            width: "10em",
-                        }}
-                    >
-                        Reset
-                    </div>
+                    <ResetButton
+                        myFunction={resetSimulation}
+                    />
                 </Col>
                 <Col>
                     <ColorLegend
