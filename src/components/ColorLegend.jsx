@@ -28,7 +28,7 @@ export const ColorLegend = ({ colorScheme }) => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            margin: '5% auto'
+            margin: '1% auto'
         }}>
             {
                 colorScheme.colorThresholds.map(({ color, threshold }) => (

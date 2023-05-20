@@ -4,7 +4,6 @@ import { Container, Col, Row } from "react-bootstrap";
 import { ResetButton } from "./ResetButton";
 import { SimulationChart } from "./SimulationChart";
 import { SimulationStats } from "./SimulationStats";
-import { ColorLegend } from "./ColorLegend";
 
 import { generateCandidates } from "../utils/generateCandidates";
 import { wasBestCandidateChosen } from "../utils/wasBestCandidateChosen";
@@ -72,7 +71,7 @@ export const SimulationManager = ({ numCandidates, numSimulations, colorScheme }
             }, msDelayBetweenSimulations);
             return () => clearTimeout(timer);
         }
-    }, [simulationCount, numSimulations, successCounts, numCandidates, stoppingPoints, isResetting]);
+    }, [simulationCount, numSimulations, successCounts, numCandidates, stoppingPoints, isResetting, colorScheme]);
 
     return (
         <Container>
