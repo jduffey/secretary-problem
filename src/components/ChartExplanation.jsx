@@ -19,7 +19,7 @@ export const ChartExplanation = ({ numSimulations }) => {
                     </ul>
                     <li>After the current stopping point ratio is used to find a candidate, we move to the next ratio and perform the same steps.</li>
                 </ul>
-                <li>After all stopping point ratios have been used on the given group of candidates, we start the simulaton again with a new group of candidates until the maximum number of simulations ({numSimulations.toLocaleString()}) have been executed.</li>
+                <li>After all stopping point ratios have been used on the given group of candidates, we start the simulation again with a new group of candidates until the maximum number of simulations ({numSimulations.toLocaleString()}) have been executed.</li>
                 <li>The colorings on the bars are intended to help with visualization and have no meaning or relevance to the problem.</li>
             </ul>
         </div>
