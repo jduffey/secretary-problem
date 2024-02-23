@@ -19,7 +19,7 @@ Example chart :
 npm install
 ```
 
-2. Start the application by running:
+1. Start the application by running:
 
 ```
 npm start
@@ -27,5 +27,5 @@ npm start
 
 ## Resources
 
-- [Secretary Problem - Wikipeida](https://en.wikipedia.org/wiki/Secretary_problem)
+- [Secretary Problem - Wikipedia](https://en.wikipedia.org/wiki/Secretary_problem)
 - [Sultan's Dowry Problem - Wolfram Mathworld](https://mathworld.wolfram.com/SultansDowryProblem.html)
