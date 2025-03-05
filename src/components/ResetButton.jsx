@@ -1,6 +1,5 @@
 export const ResetButton = ({ myFunction }) => (
-    <div
-        role="button"
+    <button
         onClick={() => myFunction()}
         style={{
             border: "1px solid black",
@@ -13,8 +12,10 @@ export const ResetButton = ({ myFunction }) => (
             margin: "auto",
             backgroundColor: "lightgray",
             width: "8em",
+            display: "block",
+            appearance: "none",
         }}
     >
         Reset
-    </div>
+    </button>
 );
